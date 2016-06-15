@@ -7,7 +7,7 @@ image maps jquery plugin
     
 ## example
 
-http://s.codepen.io/potatofactory/debug/RRbXRe
+http://naver.github.io/ImageMaps/
 
 ## LICENSE
 
