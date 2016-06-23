@@ -34,10 +34,21 @@
     }
 }(function ($) {
     'use strict';
+
+    var SHAPE = {
+        'RECT' : 'rect',
+        'CIRCLE' : 'circle',
+        'ELLIPSE' : 'ellipse',
+        'TEXT' : 'text',
+        'IMAGE' : 'image',
+        'POLY' : 'poly',
+        'POLYLINE' : 'polyline',
+        'POLYGON' : 'polygon'
+    }
     
     var defaults = {
         'isEditMode': false,
-        'shape': 'rect', // select map area shape type - rect, circle, text, image, poly
+        'shape': SHAPE.RECT, // select map area shape type - rect, circle, text, image, poly
         'shapeText': 'press on link', // shape 옵션이 text일 때 적용된다.
         'shapeStyle': {
             'fill': '#ffffff',
@@ -303,27 +314,27 @@
             var defaultShapeX = imageWidth * 0.1, defaultShapeY = imageHeight * 0.1;
             var defaultRadius = (defaultShapeX >= defaultShapeY) ? defaultShapeY : defaultShapeX;
             // invalid 좌표값이거나 배열이 아닌 타입일 경우는 디폴트 좌표로 그린다.
-            if(shapeType === 'rect') {
+            if(shapeType === SHAPE.RECT) {
                 shapeCoords = $.extend([], defaultShapeOptions.rect, [
                     centerX - defaultShapeX,
                     centerY - defaultShapeY,
                     centerX + defaultShapeX,
                     centerY + defaultShapeY
                 ]);
-            } else if(shapeType === 'circle') {
+            } else if(shapeType === SHAPE.CIRCLE) {
                 shapeCoords = $.extend([], defaultShapeOptions.circle, [
                     centerX,
                     centerY,
                     defaultRadius
                 ]);
-            } else if(shapeType === 'ellipse') {
+            } else if(shapeType === SHAPE.ELLIPSE) {
                 shapeCoords = $.extend([], defaultShapeOptions.ellipse, [
                     centerX,
                     centerY,
                     defaultRadius,
                     defaultRadius
                 ]);
-            } else if(shapeType === 'image') {
+            } else if(shapeType === SHAPE.IMAGE) {
                 var imageSize = getNaturalImageSize(this.shapeImageUrl);
                 defaultShapeX = imageSize.width / 2, defaultShapeY = imageSize.height / 2;
                 shapeCoords = [
@@ -332,18 +343,18 @@
                     centerX + defaultShapeX,
                     centerY + defaultShapeY
                 ];
-            } else if(shapeType === 'poly') {
+            } else if(shapeType === SHAPE.POLY) {
                 
             }
         } else {
             // 타입별로 정상적으로 좌표값을 받았다면 해당 좌표로 그린다.
-            if(shapeType === 'rect' || shapeType === 'image') {
+            if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
                 shapeCoords = $.extend([], defaultShapeOptions.rect, coords);
-            } else if(shapeType === 'circle') {
+            } else if(shapeType === SHAPE.CIRCLE) {
                 shapeCoords = $.extend([], defaultShapeOptions.circle, coords);
-            } else if(shapeType === 'ellipse') {
+            } else if(shapeType === SHAPE.ELLIPSE) {
                 shapeCoords = $.extend([], defaultShapeOptions.ellipse, coords);
-            } else if(shapeType === 'text') {
+            } else if(shapeType === SHAPE.TEXT) {
                 if(!coords[0]) {
                     coords[0] = centerX;
                     isDefaultTextCoords = true;
@@ -356,7 +367,7 @@
                     coords[2] = 20;
                 }
                 shapeCoords = $.extend([], defaultShapeOptions.text, coords);
-            } else if(shapeType === 'poly') {
+            } else if(shapeType === SHAPE.POLY) {
                 
             }
         }
@@ -365,10 +376,10 @@
         var areaType = shapeType;
         var shapeSecondaryOptions = {};
         
-        if(shapeType === 'text' || shapeType === 'image') {
-            areaType = 'rect';
+        if(shapeType === SHAPE.TEXT || shapeType === SHAPE.IMAGE) {
+            areaType = SHAPE.RECT;
             
-            if(shapeType === 'text') {
+            if(shapeType === SHAPE.TEXT) {
                 shapeSecondaryOptions = { 'text': this.shapeText };
             } else {
                 shapeSecondaryOptions = { 'href': this.shapeImageUrl };
@@ -379,12 +390,12 @@
         this.setShapeCoords(shapeCoords);
         this.updateShapeInfo(index, { coords: shapeCoords, type: shapeType, url: linkUrl, style: this.shapeStyle }, shapeSecondaryOptions);
         
-        if(isDefaultTextCoords && this.isEditMode && shapeType === 'text') {
+        if(isDefaultTextCoords && this.isEditMode && shapeType === SHAPE.TEXT) {
             adjustTextShape.call(this);
         }
         
-        if(shapeType === 'ellipse') {
-            areaType = 'circle';
+        if(shapeType === SHAPE.ELLIPSE) {
+            areaType = SHAPE.CIRCLE;
             shapeCoords = [shapeCoords[0], shapeCoords[1], defaultShapeOptions.ellipse[2], defaultShapeOptions.ellipse[2]];
         }
         
@@ -453,8 +464,8 @@
     
     function createShape(shapeType, shapeCoords, linkUrl, index) {
         
-        if(shapeType === 'poly') {
-            shapeType = 'polyline';
+        if(shapeType === SHAPE.POLY) {
+            shapeType = SHAPE.POLYLINE;
         }
         
         var shapeEl = $(document.createElementNS(NS_SVG, shapeType));
@@ -473,7 +484,7 @@
         this.setShapeStyle({ 'cursor': cursor });
         shapeEl.css(this.shapeStyle);
         
-        if(shapeType === 'text') {
+        if(shapeType === SHAPE.TEXT) {
             shapeEl.css({
                 'fill-opacity': '',
                 'stroke-opacity': ''
@@ -499,7 +510,7 @@
         shapeEl = shapeEl || this.shapeEl;
         var shapeType = shapeOptions ? shapeOptions.type : this.shapeType;
         
-        if(shapeType === 'rect' || shapeType === 'image') {
+        if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             shapeEl.attr({
                 'x': shapeCoords[0],
                 'y': shapeCoords[1],
@@ -511,14 +522,14 @@
             if(shapeCoords[3]) {
                 shapeEl.attr('height', shapeCoords[3] - shapeCoords[1]);
             }
-            if(shapeType === 'image') {
+            if(shapeType === SHAPE.IMAGE) {
                 // xlink 속성 설정 시에는 DOM api의 setAttributeNS를 사용해야 함.
                 // svg 전용 속성은 무조건 DOM api를 사용해야 함.
                 shapeEl.get(0).setAttributeNS(NS_XLINK, 'href', (shapeOptions ? shapeOptions.href : this.shapeImageUrl));
                 // image 엘리먼트의 width, height를 고정 비율로 변경되는 걸 해제해주기 위한 속성 셋팅.
                 shapeEl.get(0).setAttribute('preserveAspectRatio', 'none');
             }
-        } else if(shapeType === 'circle') {
+        } else if(shapeType === SHAPE.CIRCLE) {
             shapeEl.attr({
                 'cx': shapeCoords[0],
                 'cy': shapeCoords[1],
@@ -527,7 +538,7 @@
             if(shapeCoords[2]) {
                 shapeEl.attr('r', shapeCoords[2]);
             }
-        } else if(shapeType === 'ellipse') {
+        } else if(shapeType === SHAPE.ELLIPSE) {
             shapeEl.attr({
                 'cx': shapeCoords[0],
                 'cy': shapeCoords[1],
@@ -539,7 +550,7 @@
             if(shapeCoords[3]) {
                 shapeEl.attr('ry', shapeCoords[3]);
             }
-        } else if(shapeType === 'text') {
+        } else if(shapeType === SHAPE.TEXT) {
             shapeEl.attr({
                 'x': shapeCoords[0],
                 'y': shapeCoords[1],
@@ -547,7 +558,7 @@
                 'class': '_shape_face'
             });
             shapeEl.text(this.shapeText);
-        } else if(shapeType === 'poly') {
+        } else if(shapeType === SHAPE.POLY) {
             
         }
     }
@@ -609,7 +620,7 @@
     function calculateVertexCoords(shapeType, shapeCoords) {
         var vertexArr = [];
         
-        if(shapeType === 'rect' || shapeType === 'image') {
+        if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             // 좌상, 좌하, 우상, 우하, 상, 하, 좌, 우 순
             // 개별 vertex의 좌표값이므로 좌표의 순서는 크게 상관 없지만 참고로...
             vertexArr = [{
@@ -629,7 +640,7 @@
             }, {
                 x: shapeCoords[2], y: (shapeCoords[3] - shapeCoords[1]) / 2 + shapeCoords[1], type: 'e'
             }];
-        } else if(shapeType === 'circle') {
+        } else if(shapeType === SHAPE.CIRCLE) {
             // 상, 하, 좌, 우
             vertexArr = [{
                 x: shapeCoords[0], y: shapeCoords[1] - shapeCoords[2], type: 'n'
@@ -640,7 +651,7 @@
             }, {
                 x: shapeCoords[0] + shapeCoords[2], y: shapeCoords[1], type: 'e'
             }];
-        } else if(shapeType === 'ellipse') {
+        } else if(shapeType === SHAPE.ELLIPSE) {
             // 상, 하, 좌, 우
             vertexArr = [{
                 x: shapeCoords[0], y: shapeCoords[1] - shapeCoords[3], type: 'n'
@@ -651,7 +662,7 @@
             }, {
                 x: shapeCoords[0] + shapeCoords[2], y: shapeCoords[1], type: 'e'
             }];
-        } else if(shapeType === 'poly') {
+        } else if(shapeType === SHAPE.POLY) {
             
         }
         
@@ -662,9 +673,9 @@
         var shapeEl = this.svgEl.find('._shape_face[data-index="' + areaEl.data('index') + '"]');
         shapeType = shapeType || this.shapeType;
         
-        if(shapeType === 'text') {
+        if(shapeType === SHAPE.TEXT) {
             shapeCoords = convertTextToRectCoords(shapeEl);
-        } else if(shapeType === 'ellipse') {
+        } else if(shapeType === SHAPE.ELLIPSE) {
             shapeCoords = [shapeCoords[0], shapeCoords[1], defaultShapeOptions.ellipse[2]];
         }
         areaEl.attr('coords', shapeCoords.join(','));
@@ -722,7 +733,7 @@
         var coords = [];
         var shapeType = shapeEl.get(0).tagName.toLowerCase();
         
-        if(shapeType === 'rect' || shapeType === 'image') {
+        if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             var targetX = parseInt(shapeEl.attr('x'), 10);
             var targetY = parseInt(shapeEl.attr('y'), 10);
             coords = [
@@ -731,31 +742,31 @@
                 targetX + parseInt(shapeEl.attr('width'), 10),
                 targetY + parseInt(shapeEl.attr('height'), 10)
             ];
-            if(shapeType === 'image') {
+            if(shapeType === SHAPE.IMAGE) {
                 this.setImageShape(shapeEl.attr('href'));
             }
-        } else if(shapeType === 'circle') {
+        } else if(shapeType === SHAPE.CIRCLE) {
             var targetX = parseInt(shapeEl.attr('cx'), 10);
             var targetY = parseInt(shapeEl.attr('cy'), 10);
             coords = [targetX, targetY, parseInt(shapeEl.attr('r'), 10)];
-        } else if(shapeType === 'ellipse') {
+        } else if(shapeType === SHAPE.ELLIPSE) {
             var targetX = parseInt(shapeEl.attr('cx'), 10);
             var targetY = parseInt(shapeEl.attr('cy'), 10);
             coords = [targetX, targetY, parseInt(shapeEl.attr('rx'), 10), parseInt(shapeEl.attr('ry'), 10)];
-        } else if(shapeType === 'text') {
+        } else if(shapeType === SHAPE.TEXT) {
             var targetX = parseFloat(shapeEl.attr('x'));
             var targetY = parseFloat(shapeEl.attr('y'));
             var fontSize = parseFloat(shapeEl.attr('font-size'));
             coords = [targetX, targetY, fontSize];
-        } else if(shapeType === 'polygon') {
-            shapeType = 'poly';
+        } else if(shapeType === SHAPE.POLYGON) {
+            shapeType = SHAPE.POLY;
         }
 
         this.setShapeType(shapeType);
         this.setShapeElement(shapeEl);
         this.setShapeCoords(coords);
         
-        if(shapeType !== 'text') {
+        if(shapeType !== SHAPE.TEXT) {
             shapeEl.attr('data-fill', shapeEl.css('fill'));
             shapeEl.css('fill', '#ffffff');
             
@@ -828,7 +839,7 @@
                 coords = getMovedVertexCoords.call(this, event.pageX - this.svgEl.offset().left, event.pageY - this.svgEl.offset().top);
             }
             
-            if(shapeType !== 'text') {
+            if(shapeType !== SHAPE.TEXT) {
                 this.setVertexCoords(coords.vertexCoords);
                 drawVertex(coords.vertexCoords, this.vertexEls, this.shapeType);    
             }
@@ -898,23 +909,23 @@
         var vertexCoords = [];
         var shapeType = this.shapeType;
 
-        if(shapeType === 'rect' || shapeType === 'image') {
+        if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             var width = parseInt(shapeEl.attr('width'), 10);
             var height = parseInt(shapeEl.attr('height'), 10);
             var movedBottomRightX = x + width;
             var movedBottomRightY = y + height;
 
             movedCoords = [x, y, movedBottomRightX, movedBottomRightY];
-            vertexCoords = calculateVertexCoords('rect', movedCoords);
-        } else if(shapeType === 'circle') {
+            vertexCoords = calculateVertexCoords(SHAPE.RECT, movedCoords);
+        } else if(shapeType === SHAPE.CIRCLE) {
             movedCoords = [x, y, parseInt(shapeEl.attr('r'), 10)];
-            vertexCoords = calculateVertexCoords('circle', movedCoords);
-        } else if(shapeType === 'ellipse') {
+            vertexCoords = calculateVertexCoords(SHAPE.CIRCLE, movedCoords);
+        } else if(shapeType === SHAPE.ELLIPSE) {
             movedCoords = [x, y, parseInt(shapeEl.attr('rx'), 10), parseInt(shapeEl.attr('ry'), 10)];
-            vertexCoords = calculateVertexCoords('ellipse', movedCoords);
-        } else if(shapeType === 'text') {
+            vertexCoords = calculateVertexCoords(SHAPE.ELLIPSE, movedCoords);
+        } else if(shapeType === SHAPE.TEXT) {
             movedCoords = [x, y];
-        } else if(shapeType === 'poly') {
+        } else if(shapeType === SHAPE.POLY) {
 
         }
         
@@ -930,7 +941,7 @@
         var shapeType = this.shapeType;
         var updatedCoords = [];
         
-        if(shapeType === 'rect' || shapeType === 'image') {
+        if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             var x = parseInt(shapeEl.attr('x'), 10);
             var y = parseInt(shapeEl.attr('y'), 10);
             updatedCoords = [
@@ -939,25 +950,25 @@
                 x + parseInt(shapeEl.attr('width'), 10),
                 y + parseInt(shapeEl.attr('height'), 10)
             ];
-        } else if(shapeType === 'circle') {
+        } else if(shapeType === SHAPE.CIRCLE) {
             updatedCoords = [
                 parseInt(shapeEl.attr('cx'), 10),
                 parseInt(shapeEl.attr('cy'), 10),
                 parseInt(shapeEl.attr('r'), 10),
             ];
-        } else if(shapeType === 'ellipse') {
+        } else if(shapeType === SHAPE.ELLIPSE) {
             updatedCoords = [
                 parseInt(shapeEl.attr('cx'), 10),
                 parseInt(shapeEl.attr('cy'), 10),
                 parseInt(shapeEl.attr('rx'), 10),
                 parseInt(shapeEl.attr('ry'), 10)
             ];
-        } else if(shapeType === 'text') {
+        } else if(shapeType === SHAPE.TEXT) {
             updatedCoords = [
                 parseInt(shapeEl.attr('x'), 10),
                 parseInt(shapeEl.attr('y'), 10)
             ];
-        } else if(shapeType === 'poly') {
+        } else if(shapeType === SHAPE.POLY) {
 
         }
         
@@ -991,7 +1002,7 @@
         
         var shapeType = this.shapeType;
         var direction = this.vertexEl.attr('data-direction');
-        if(shapeType === 'rect' || shapeType === 'image') {
+        if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             switch(direction) {
                 // 좌상
                 case 'nw':
@@ -1026,7 +1037,7 @@
                     movedCoords = getValidCoordsForRect.call(this, [this.shapeCoords[0], this.shapeCoords[1], x, this.shapeCoords[3]], direction);
                     break;
             }
-        } else if(shapeType === 'circle') {
+        } else if(shapeType === SHAPE.CIRCLE) {
             switch(direction) {
                 case 'n':
                     movedCoords = [this.shapeCoords[0], this.shapeCoords[1], getValidCoordsForCircle.call(this, this.shapeCoords[1] - y)];
@@ -1042,7 +1053,7 @@
                     break;
             }
             
-        } else if(shapeType === 'ellipse') {
+        } else if(shapeType === SHAPE.ELLIPSE) {
             switch(direction) {
                 case 'n':
                     movedCoords = [this.shapeCoords[0], this.shapeCoords[1], this.shapeCoords[2], getValidCoordsForCircle.call(this, this.shapeCoords[1] - y)];
@@ -1058,7 +1069,7 @@
                     break;
             }
             
-        } else if(shapetype === 'poly') {
+        } else if(shapetype === SHAPE.POLY) {
             // polygon의 경우, 드래그 되는 좌표에 따라 이벤트 대상 vertex의 x, y 좌표가 자유롭게 변경.
         }
         
@@ -1113,9 +1124,9 @@
     function getCoordsByRatio(coords, shapeType, widthRatio, heightRatio) {
         var adjustCoords = [];
         
-        if(shapeType === 'rect' || shapeType === 'image' || shapeType === 'ellipse') {
+        if(shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE || shapeType === SHAPE.ELLIPSE) {
             adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * widthRatio, coords[3] * heightRatio];
-        } else if(shapeType === 'circle') {
+        } else if(shapeType === SHAPE.CIRCLE) {
             var radiusRatio = 1;
             
             if(widthRatio >= heightRatio) {
@@ -1133,9 +1144,9 @@
             }
             
             adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * radiusRatio];
-        } else if(shapeType === 'text') {
+        } else if(shapeType === SHAPE.TEXT) {
             adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * widthRatio];
-        } else if(shapeType === 'poly') {
+        } else if(shapeType === SHAPE.POLY) {
             
         }
         
