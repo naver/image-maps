@@ -20,6 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+/**
+ * imageMaps 1.1.0
+ * jquery plugin which can be partially linked to the image
+ * 
+ * https://github.com/naver/ImageMaps
+ * demo - http://naver.github.io/ImageMaps/
+ * 
+ * Released on: July 6, 2016
+ */
+
 
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
@@ -209,6 +219,10 @@
     
     ImageMaps.prototype.getCoordsByRatio = function(coords, shapeType, widthRatio, heightRatio) {
         return getCoordsByRatio(coords, shapeType, widthRatio, heightRatio);
+    };
+    
+    ImageMaps.prototype.zoom = function(percentages) {
+        zoom.call(this, percentages);    
     };
     
     ImageMaps.prototype.enableClick = function() {
@@ -855,10 +869,24 @@
         
         if(this.containerWidth !== containerWidth || this.containerHeight !== containerHeight) {
             redraw.call(this, containerWidth, containerHeight);
-            
-            this.containerWidth = containerWidth;
-            this.containerHeight = containerHeight;
         }
+    }
+    
+    function zoom(percentages) {
+        var widthPercentage = percentages[0];
+        var heightPercentage = (percentages.length < 2) ? percentages[0] : percentages[1];
+        var containerWidth = widthPercentage * 0.01 * this.container.width();
+        var containerHeight = heightPercentage * 0.01 * this.container.height();
+        
+        this.container.css({
+            'width': containerWidth + 'px',
+            'height': containerHeight + 'px'
+        });
+        
+        var _this = this;
+        setTimeout(function() {
+            _this.svgEl && _this.svgEl.length > 0 && redraw.call(_this, containerWidth, containerHeight);
+        }, 0);
     }
     
     function redraw(containerWidth, containerHeight) {
@@ -866,9 +894,14 @@
         var allShapeInfo = this.allShapeInfo;
         var widthRatio = containerWidth / this.containerWidth;
         var heightRatio = containerHeight / this.containerHeight;
+        var containerPos = this.container.position();
         
         this.svgEl.get(0).setAttribute('width', containerWidth);
         this.svgEl.get(0).setAttribute('height', containerHeight);
+        console.log(this.container.position());
+        this.svgEl.css({
+            'top': containerPos.top, 'left': containerPos.left
+        });
         
         $.each(allShapeInfo, function(index, item) {
             item.coords = getCoordsByRatio(item.coords, item.type, widthRatio, heightRatio);
@@ -876,8 +909,10 @@
             drawVertex(calculateVertexCoords(item.type, item.coords), _this.svgEl.find('._shape_vertex[data-index="' + item.index + '"]'), item.type);
             drawShape.call(_this, item.coords, _this.svgEl.find('._shape_face[data-index="' + item.index + '"]'), item);
             drawArea.call(_this, item.coords, _this.mapEl.find('area[data-index="' + item.index + '"]'), item.type);
-            
         });
+        
+        this.containerWidth = containerWidth;
+        this.containerHeight = containerHeight;
     }
     
     function declareShape(shapeEl, x, y) {
@@ -1258,6 +1293,10 @@
         
         getCoordsByRatio: function(coords, shapeType, widthRatio, heightRatio) {
             return this.data('image_maps_inst').getCoordsByRatio(coords, shapeType, widthRatio, heightRatio);
+        },
+        
+        zoom: function(percentages) {
+            this.data('image_maps_inst').zoom(percentages);
         }
     });
 
