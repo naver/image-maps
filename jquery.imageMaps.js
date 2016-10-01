@@ -571,7 +571,7 @@
                 'font-size': shapeCoords[2],
                 'class': '_shape_face'
             });
-            shapeEl.text(this.shapeText);
+            shapeEl.text((shapeOptions && shapeOptions['text']) || this.shapeText);
         } else if(shapeType === SHAPE.POLY) {
 
         }
@@ -910,7 +910,6 @@
 
         this.svgEl.get(0).setAttribute('width', containerWidth);
         this.svgEl.get(0).setAttribute('height', containerHeight);
-        console.log(this.container.position());
         this.svgEl.css({
             'top': containerPos.top, 'left': containerPos.left
         });
