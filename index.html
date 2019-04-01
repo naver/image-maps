@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>ImageMaps by naver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
     <style>
         #forkongithub a{background:#2DB400;color:#fff;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#fff;color:#2DB400;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:fixed;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}
         .big_title {
@@ -14,8 +14,8 @@
             text-align: center;
         }
 
-        ._imageMaps_area { 
-            padding-bottom: 50px; 
+        ._imageMaps_area {
+            padding-bottom: 50px;
         }
 
         ._imageMaps_area,
@@ -104,7 +104,7 @@
             top: 16px;
             position: relative;
         }
-        
+
         .result_view_header {
             width: 500px;
             height: 70px;
@@ -134,14 +134,14 @@
           <a href="#" id="circle" class="btn">add circle</a>
           <a href="#" id="ellipse" class="btn">add ellipse</a>
         </div>
-    
+
         <div class="text_shape shape">
           <p>3. Text Shape Type</p>
           <input type="number" id="size" placeholder="text size" style="width:60px">
           <input type="text" id="text_input" placeholder="input text" style="width: 150px;">
           <a href="#" id="text" class="btn">add text</a>
         </div>
-    
+
         <div class="image_shape shape">
           <p>4. Image Shape Type</p>
           <input type="radio" id="image_1" name="image_input" class="image_input" data-image="http://icon-icons.com/icons2/165/PNG/256/mapmarker_pushpin_right_azure_22998.png"><label for="image_1"><img src="http://icon-icons.com/icons2/165/PNG/256/mapmarker_pushpin_right_azure_22998.png"></label>
@@ -159,7 +159,7 @@
         <h3>Edit Image Maps</h3>
         <img src="http://cfile209.uf.daum.net/image/247F194A5234414929344E" class="_image_maps">
       </div>
-    
+
       <div class="_imageMaps_area_view">
         <div class="result_view_header">
             <h3 class="view_header">Result</h3>
@@ -186,7 +186,7 @@
         console.log(data)
       }
     });
-    
+
     $('#rect').on('click', function(event) {
       event.preventDefault();
       $('._image_maps').setShapeStyle({
@@ -195,7 +195,7 @@
         'stroke-width': 2
       }).addShape(null, $('#link').val(), 'rect');
     });
-    
+
     $('#circle').on('click', function(event) {
       event.preventDefault();
       $('._image_maps').setShapeStyle({
@@ -204,7 +204,7 @@
         'stroke-width': 2
       }).addShape(null, $('#link').val(), 'circle');
     });
-    
+
     $('#ellipse').on('click', function(event) {
       event.preventDefault();
       $('._image_maps').setShapeStyle({
@@ -213,13 +213,13 @@
         'stroke-width': 2
       }).addShape(null, $('#link').val(), 'ellipse');
     });
-    
+
     $('a.color').on('click', function(event) {
       event.preventDefault();
       $('a.color').removeClass('selected');
       $(this).addClass('selected');
     });
-    
+
     $('#text').on('click', function(event) {
       event.preventDefault();
       $('._image_maps').setTextShape($('#text_input').val(), {
@@ -228,25 +228,25 @@
         'stroke-width': ''
       }).addShape([null, null, $('#size').val()], $('#link').val(), 'text');
     });
-    
+
     $('#image').on('click', function(event) {
       event.preventDefault();
       $('._image_maps').setImageShape($('input.image_input:checked').data('image')).addShape(null, $('#link').val(), 'image');
     });
-    
+
     $('#remove').on('click', function(event) {
       event.preventDefault();
       $('._image_maps').removeShape();
     });
-    
+
     $('#remove_all').on('click', function(event) {
       event.preventDefault();
       $('._image_maps').removeAllShapes();
     });
-    
+
     var viewEl = $('._image_maps_view');
     viewEl.imageMaps();
-    
+
     $('#maps_zoom').on('click', function(event) {
         event.preventDefault();
 
@@ -259,17 +259,17 @@
         }
 
         viewEl.zoom([val]);
-        
+
         // for image resize
         $('._imageMaps_area_view').css({
             'width': val * 0.01 * viewEl.width(),
             'height': val * 0.01 * viewEl.height()
         });
     });
-    
+
     $('#view').on('click', function(event) {
       event.preventDefault();
-    
+
       var allShapes = $('._image_maps').getAllShapes();
       var newCoords = null;
       viewEl.removeAllShapes();
@@ -281,7 +281,7 @@
         if (item.text) {
           viewEl.setTextShape(item.text);
         }
-    
+
         var originalImg = $('._imageMaps_area').find('img');
         var viewImage = $('._imageMaps_area_view').find('img');
         var widthRatio = originalImg.width();
