@@ -1776,7 +1776,7 @@ function jqueryImageMaps ($) {
      * @returns {Float}
      */
     function getValidCoordsForCircle (coordsDiff) {
-        let radius = this.shapeCoords[2];
+        let radius;
 
         if (coordsDiff <= this.shapeLimitCoords.radius) {
             ({radius} = this.shapeLimitCoords);
@@ -1987,7 +1987,6 @@ function jqueryImageMaps ($) {
             }
 
             imageMapsObj.removeImageMaps();
-            delete this.data('image_maps_inst');
             this.data('image_maps_inst', null);
         },
 
