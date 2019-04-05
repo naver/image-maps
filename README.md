@@ -1,13 +1,15 @@
 # imageMaps
-image maps jquery plugin
+
+image maps jQuery plugin
 
 ## supported devices and browser
-    * PC - IE9+, Chrome, Firefox
-    * Mobile - iOS, Android (editing is not supported)
-    
+
+* PC - IE9+, Chrome, Firefox
+* Mobile - iOS, Android (editing is not supported)
+
 ## example
 
-http://naver.github.io/ImageMaps/
+<http://naver.github.io/ImageMaps/>
 
 ## LICENSE
 

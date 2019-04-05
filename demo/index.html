@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ImageMaps by naver</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+    <link href="data:image/x-icon;," type="image/x-icon" rel="shortcut icon" />
+    <!--
+    <link href="stylesheets/github-light.css" rel="stylesheet">
+    <link href="stylesheets/normalize.css" rel="stylesheet">
+    <link href="stylesheets/stylesheet.css" rel="stylesheet">
+    -->
+    <link href="stylesheets/index.css" rel="stylesheet">
+    <script defer="defer" src="../node_modules/jquery/dist/jquery.js"></script>
+
+    <!-- <script type="module" src="index.js"></script> -->
+    <script defer="defer" src="../dist/index.umd.js"></script>
+    <script defer="defer" src="index.js"></script>
+  </head>
+  <body>
+    <span id="forkongithub">
+      <a href="https://github.com/naver/ImageMaps"
+        class="forkongithub">Fork me on GitHub</a></span>
+    <div id="wrap" role="main">
+      <div class="big_title">ImageMaps</div>
+      <div class="link box">
+        <label><p>0. Shape Url</p>
+          <input type="text" id="link" value=""
+            placeholder="input your url" style="width:200px">
+        </label>
+      </div>
+      <div class="add_shape box">
+        <div>
+          <p>1. Color</p>
+          <a href="#" class="color btn" data-color="red"
+            style="background-color:red; color:transparent;">Red</a>
+          <a href="#" class="color btn" data-color="green"
+            style="background-color:green; color:transparent;">Green</a>
+          <a href="#" class="color btn" data-color="blue"
+            style="background-color:blue; color:transparent;">Blue</a>
+          <a href="#" class="color btn" data-color="purple"
+            style="background-color:purple; color:transparent;">Purple</a>
+          <a href="#" class="color btn" data-color="yellow"
+            style="background-color:yellow; color:transparent;">Yellow</a>
+        </div>
+        <div class="defalut_shape shape">
+          <p>2. Basic Shape Type</p>
+          <a href="#" id="rect" class="btn">add rectangle</a>
+          <a href="#" id="circle" class="btn">add circle</a>
+          <a href="#" id="ellipse" class="btn">add ellipse</a>
+        </div>
+
+        <div class="text_shape shape">
+          <p>3. Text Shape Type</p>
+          <label>Size:&nbsp;
+            <input type="number" id="size" placeholder="12" style="width:60px">
+          </label>
+          &nbsp;&nbsp;
+          <label>Text:&nbsp;
+            <input type="text" id="text_input" placeholder="Some text" style="width: 150px;">
+          </label>
+          <a href="#" id="text" class="btn">add text</a>
+        </div>
+
+        <div class="image_shape shape">
+          <fieldset style="border: none; margin-left: 0px; padding-left: 0px;">
+            <legend><p>4. Image Shape Type</p></legend>
+            <input type="radio" id="image_1" name="image_input"
+              class="image_input"
+              data-image="images/mapmarker_pushpin_right_azure_22998.png">
+            <label for="image_1">
+              <img alt="Azure pushpin facing right" src="images/mapmarker_pushpin_right_azure_22998.png">
+            </label>
+            <input type="radio" id="image_2" name="image_input"
+              class="image_input" data-image="images/mapmarker_marker_outside_azure_23007.png">
+            <label for="image_2">
+              <img alt="Azure map marker" src="images/mapmarker_marker_outside_azure_23007.png">
+            </label>
+            <input type="radio" id="image_3" name="image_input"
+              class="image_input" data-image="images/mapmarker_drawingpin_right_pink_23026.png">
+            <label for="image_3">
+              <img alt="Pink drawing pin facing right" src="images/mapmarker_drawingpin_right_pink_23026.png">
+            </label>
+            <input type="radio" id="image_4" name="image_input"
+              class="image_input" data-image="images/bt_right_arrow_22072.png" checked>
+            <label for="image_4">
+              <img alt="Right arrow button" src="images/bt_right_arrow_22072.png">
+            </label>
+            <a href="#" id="image" class="btn">add image</a>
+          </fieldset>
+        </div>
+      </div>
+      <div class="remove_shape box">
+        <a href="#" id="remove" class="btn">remove shape</a>
+        <a href="#" id="remove_all" class="btn">remove all shapes</a>
+      </div>
+      <div class="_imageMaps_area">
+        <h3>Edit Image Maps</h3>
+        <img alt="Jeonju Hanok Village map" src="http://cfile209.uf.daum.net/image/247F194A5234414929344E"
+          class="_image_maps">
+      </div>
+
+      <div class="_imageMaps_area_view">
+        <div class="result_view_header">
+            <h3 class="view_header">Result</h3>
+            <a href="#" class="btn maps_view" id="view">view result</a>
+            <input type="number" id="zoom" placeholder="zoom percentage" style="width:110px">
+            <label for="zoom"><a href="#" class="btn maps_zoom" id="maps_zoom">zoom</a></label>
+        </div>
+        <img alt="Jeonju Hanok Village map" src="http://cfile209.uf.daum.net/image/247F194A5234414929344E"
+          class="_image_maps_view">
+      </div>
+    </div>
+  </body>
+</html>

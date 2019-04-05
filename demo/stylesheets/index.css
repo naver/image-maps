@@ -1,0 +1,104 @@
+#forkongithub a{background:#1B6600;color:#fff;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#fff;color:#1B6600;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:fixed;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}
+
+.big_title {
+    font-weight: bold;
+    font-size: 40px;
+    margin: 80px 0;
+    text-align: center;
+}
+
+._imageMaps_area {
+    padding-bottom: 50px;
+}
+
+._imageMaps_area,
+._imageMaps_area_view {
+    margin: 0 auto;
+    width: 700px;
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+._imageMaps_area_view {
+    width: 500px;
+}
+
+img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+a:not(.forkongithub) {
+    width: 18px;
+    height: 18px;
+    text-decoration: none;
+}
+
+.shape {
+    margin: 18px 0;
+}
+
+.btn {
+    padding: 5px 2px;
+    border: 2px solid black;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+a.color {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+a.color.selected {
+    border: 3px solid black;
+}
+
+input[type=text],
+input[type=number] {
+    height: 24px;
+}
+
+label > img {
+    width: 7%;
+    height: 7%;
+}
+
+label[for=image_4] > img {
+    width: 45px;
+}
+
+div.box {
+    margin: 0 auto;
+    width: 650px;
+    border-bottom: 1px solid grey;
+    padding: 15px 0 15px 0;
+}
+
+div.desc {
+    margin: 0 auto;
+    width: 650px;
+}
+
+.view_header {
+    float: left;
+    position: relative;
+}
+
+.maps_view {
+    margin-left: 20px;
+    top: 16px;
+    position: relative;
+}
+
+#zoom,.maps_zoom {
+    top: 16px;
+    position: relative;
+}
+
+.result_view_header {
+    width: 500px;
+    height: 70px;
+}
