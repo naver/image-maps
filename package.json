@@ -16,19 +16,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brettz9/ImageMaps.git"
+    "url": "git+https://github.com/naver/ImageMaps.git"
   },
   "keywords": [
     "jquery",
     "imagemaps"
   ],
-  "author": "Brett Zamir",
+  "author": "Naver Corp.",
   "contributors": [],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brettz9/ImageMaps/issues"
+    "url": "https://github.com/naver/ImageMaps/issues"
   },
-  "homepage": "https://github.com/brettz9/ImageMaps#readme",
+  "homepage": "https://github.com/naver/ImageMaps#readme",
   "engines": {},
   "browserslist": [
     "cover 100%"
