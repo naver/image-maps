@@ -22,8 +22,12 @@
     "jquery",
     "imagemaps"
   ],
-  "author": "Naver Corp.",
-  "contributors": [],
+  "author": {
+    "name": "Naver Corp.",
+    "email": "byeongjin.an@navercorp.com",
+    "url": "https://github.com/ahnbj2000"
+  },
+  "contributors": ["ahnbj2000", "brettz9", "todtod80", "beanmilk"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/naver/ImageMaps/issues"
