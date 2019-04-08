@@ -42,6 +42,9 @@
   "browserslist": [
     "cover 100%"
   ],
+  "peerDependencies": {
+    "jquery": "^3.3.1"
+  },
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.4.3",
