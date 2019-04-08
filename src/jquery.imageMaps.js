@@ -1808,7 +1808,7 @@ function jqueryImageMaps ($) {
                 coords[3] * heightRatio
             ];
         } else if (shapeType === SHAPE.CIRCLE) {
-            let radiusRatio = 1;
+            let radiusRatio;
 
             if (widthRatio >= heightRatio) {
                 radiusRatio = heightRatio;

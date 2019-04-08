@@ -920,7 +920,7 @@
         shapeEl.attr({
           x: shapeCoords[0],
           y: shapeCoords[1],
-          class: '_shape_face'
+          "class": '_shape_face'
         });
 
         if (shapeCoords[2]) {
@@ -942,7 +942,7 @@
         shapeEl.attr({
           cx: shapeCoords[0],
           cy: shapeCoords[1],
-          class: '_shape_face'
+          "class": '_shape_face'
         });
 
         if (shapeCoords[2]) {
@@ -952,7 +952,7 @@
         shapeEl.attr({
           cx: shapeCoords[0],
           cy: shapeCoords[1],
-          class: '_shape_face'
+          "class": '_shape_face'
         });
 
         if (shapeCoords[2]) {
@@ -967,7 +967,7 @@
           x: shapeCoords[0],
           y: shapeCoords[1],
           'font-size': shapeCoords[2],
-          class: '_shape_face'
+          "class": '_shape_face'
         });
         shapeEl.text(shapeOptions && shapeOptions.text || this.shapeText);
       }
@@ -1047,7 +1047,7 @@
           width: 7,
           height: 7,
           'data-direction': eachCoords.type,
-          class: '_shape_vertex'
+          "class": '_shape_vertex'
         }).css('cursor', getCursor(eachCoords.type));
       });
     }
@@ -1778,7 +1778,7 @@
       if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE || shapeType === SHAPE.ELLIPSE) {
         adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * widthRatio, coords[3] * heightRatio];
       } else if (shapeType === SHAPE.CIRCLE) {
-        var radiusRatio = 1;
+        var radiusRatio;
 
         if (widthRatio >= heightRatio) {
           radiusRatio = heightRatio;
