@@ -1,5 +1,12 @@
 # ImageMaps
 
+## ?
+
+- Compatibility fix: Add `@babel/polyfill` to demo (since
+    Babelification may still require some polyfills
+    be added for the sake of some older browsers)
+- npm: Further devDeps updates (non-major version changes)
+
 ## 1.0.0
 
 - Fix: Reference to undefined `shapetype` -> `shapeType`

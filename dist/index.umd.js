@@ -1752,7 +1752,7 @@
 
 
     function getValidCoordsForCircle(coordsDiff) {
-      var radius = this.shapeCoords[2];
+      var radius;
 
       if (coordsDiff <= this.shapeLimitCoords.radius) {
         radius = this.shapeLimitCoords.radius;
@@ -1946,7 +1946,6 @@
         }
 
         imageMapsObj.removeImageMaps();
-        delete this.data('image_maps_inst');
         this.data('image_maps_inst', null);
       },
 
