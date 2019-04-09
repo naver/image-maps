@@ -29,6 +29,7 @@ module.exports = {
         sourceType: 'module'
     },
     rules: {
-        indent: ['error', 4]
+        indent: ['error', 4],
+        'valid-jsdoc': 0
     }
 };
