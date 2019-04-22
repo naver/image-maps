@@ -5,7 +5,12 @@
 - Compatibility fix: Add `@babel/polyfill` to demo (since
     Babelification may still require some polyfills
     be added for the sake of some older browsers)
+- Fix: Avoid error if `getNaturalImageSize` is supplied a string
+- Fix: For non-IE8, set a `targetAreaEl` for `onClick` call
 - npm: Further devDeps updates (non-major version changes)
+- npm: Update jquery, devDeps
+- npm: Add jquery to `peerDependencies` (since expected to be
+    present, but as we are a plugin, it is not a direct dependency)
 
 ## 1.0.0
 

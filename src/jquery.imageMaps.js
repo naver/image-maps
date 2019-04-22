@@ -28,31 +28,17 @@
 * demo - http://naver.github.io/ImageMaps/
 *
 * Released on: July 6, 2016
+* @module imageMaps
 */
 
-/**
-* @external jQuery
-*/
-/**
- * @typedef {number} Integer
- */
-/**
- * @typedef {number} Float
- */
-/**
-* @typedef {String} Url
-*/
-/**
- * @typedef {object} PlainObject
- */
-/**
-* @typedef {Array} GenericArray
-*/
+const shapeFaceClass = '_shape_face';
+const shapeVertexClass = '_shape_vertex';
+const areaClass = 'area';
 
 /**
 * @typedef
 * {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|"polyline"|"polygon"}
-* ShapeType
+* module:imageMaps.ShapeType
 */
 
 const SHAPE = {
@@ -68,15 +54,15 @@ const SHAPE = {
 
 /**
  * @see https://api.jquery.com/css/
- * @typedef {PlainObject} ShapeStyles
+ * @typedef {PlainObject} module:imageMaps.ShapeStyles
 */
 
 /**
-* @typedef {PlainObject} ImageMapOptions
+* @typedef {PlainObject} module:imageMaps.ImageMapOptions
 * @property {boolean} [isEditMode=false]
-* @property {ShapeType} [shape="rect"]
+* @property {module:imageMaps.ShapeType} [shape="rect"]
 * @property {string} [shapeText="press on link"]
-* @property {ShapeStyles} [shapeStyle] Defaults to
+* @property {module:imageMaps.ShapeStyles} [shapeStyle] Defaults to
 *   `{fill: '#ffffff', 'fill-opacity': 0.2,
 *     stroke: '#ffffff', 'stroke-width': 3}`
 * @property {function} [onClick=function () {}]
@@ -87,7 +73,7 @@ const SHAPE = {
 */
 
 /**
- * @type {ImageMapOptions}
+ * @type {module:imageMaps.ImageMapOptions}
  */
 const defaults = {
     isEditMode: false,
@@ -101,11 +87,11 @@ const defaults = {
         'stroke-width': 3
     },
     /* eslint-disable no-empty-function */
-    onClick () {},
-    onMouseDown () {},
-    onMouseMove () {},
-    onMouseUp () {},
-    onSelect () {}
+    onClick (e, targetAreaHref) {},
+    onMouseDown (e, shapeType, coords) {},
+    onMouseMove (e, shapeType, movedCoords) {},
+    onMouseUp (e, shapeType, updatedCoords) {},
+    onSelect (e, shapeInfo) {}
     /* eslint-enable no-empty-function */
 };
 
@@ -123,17 +109,21 @@ const NS_SVG = 'http://www.w3.org/2000/svg';
 const NS_XLINK = 'http://www.w3.org/1999/xlink';
 
 /**
- *
- * @param {jQuery} $
- * @returns {jQuery}
+ * Adds {@link external:"jQuery.fn"} methods.
+ * @function module:imageMaps.jqueryImageMaps
+ * @param {external:jQuery} $
+ * @returns {external:jQuery}
  */
 function jqueryImageMaps ($) {
     // The actual plugin constructor
+    /**
+     * @memberof module:imageMaps.jqueryImageMaps~
+     */
     class ImageMaps {
         /**
          *
-         * @param {jQuery} container
-         * @param {ImageMapOptions} options
+         * @param {external:jQuery} container
+         * @param {module:imageMaps.ImageMapOptions} [options]
          */
         constructor (container, options) {
             this.container = $(container);
@@ -173,9 +163,9 @@ function jqueryImageMaps ($) {
 
         /**
          * ImageMaps: 이미지 엘리먼트 하단에 map, area 엘리먼트 생성 및 속성 부여.
-         * @param {Coords} coords
+         * @param {?(module:imageMaps.Coords)} coords
          * @param {Url} linkUrl
-         * @returns {undefined}
+         * @returns {void}
          */
         createMaps (coords, linkUrl) {
             const imageWidth = this.container.width();
@@ -191,8 +181,8 @@ function jqueryImageMaps ($) {
         }
 
         /**
-         * @param {ShapeType} shapeType
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeType} shapeType
+         * @returns {void}
          */
         setShapeType (shapeType) {
             this.shapeType = shapeType;
@@ -200,8 +190,8 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @param {ShapeStyles} styleOptions
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeStyles} [styleOptions]
+         * @returns {void}
          */
         setShapeStyle (styleOptions) {
             styleOptions = styleOptions || {};
@@ -212,7 +202,7 @@ function jqueryImageMaps ($) {
          * @todo Implement
          * @param {Url} linkUrl
          * @param {Integer} index
-         * @returns {undefined}
+         * @returns {void}
          */
         setUrl (linkUrl, index) { // eslint-disable-line class-methods-use-this
             // Todo
@@ -221,8 +211,8 @@ function jqueryImageMaps ($) {
         /**
          *
          * @param {string} text
-         * @param {ShapeStyles} styleOptions
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeStyles} [styleOptions]
+         * @returns {void}
          */
         setTextShape (text, styleOptions) {
             this.setShapeStyle(styleOptions);
@@ -232,8 +222,8 @@ function jqueryImageMaps ($) {
         /**
          *
          * @param {string} imageUrl
-         * @param {ShapeStyles} styleOptions
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeStyles} [styleOptions]
+         * @returns {void}
          */
         setImageShape (imageUrl, styleOptions) {
             this.setShapeStyle(styleOptions);
@@ -242,10 +232,10 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @param {Coords} coords
+         * @param {?(module:imageMaps.Coords)} coords
          * @param {Url} linkUrl
-         * @param {ShapeType} shapeType
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeType} [shapeType]
+         * @returns {void}
          */
         addShape (coords, linkUrl, shapeType) {
             if (shapeType) {
@@ -255,8 +245,8 @@ function jqueryImageMaps ($) {
         }
 
         /**
-         * @param {Integer} index
-         * @returns {undefined}
+         * @param {Integer} [index]
+         * @returns {void}
          */
         removeShape (index) {
             if (!this.shapeEl) {
@@ -269,7 +259,7 @@ function jqueryImageMaps ($) {
 
             const areaEl = this.mapEl.find('area[data-index="' + index + '"]');
             const shapeEl = this.svgEl.find(
-                '._shape_face[data-index="' + index + '"]'
+                '.' + shapeFaceClass + '[data-index="' + index + '"]'
             );
 
             this.detachEvents(shapeEl, [{
@@ -284,14 +274,14 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @returns {undefined}
+         * @returns {void}
          */
         removeAllShapes () {
             if (!this.shapeEl) {
                 return;
             }
 
-            const allShapeEls = this.svgEl.find('._shape_face');
+            const allShapeEls = this.svgEl.find('.' + shapeFaceClass);
 
             allShapeEls.each((i, shapeEl) => {
                 this.removeShape($(shapeEl).data('index'));
@@ -302,7 +292,7 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @returns {undefined}
+         * @returns {void}
          */
         removeImageMaps () {
             this.removeAllShapes();
@@ -310,16 +300,16 @@ function jqueryImageMaps ($) {
         }
 
         /**
-        * @typedef {PlainObject} ShapeInfoOptions
+        * @typedef {PlainObject} module:imageMaps.ShapeInfoOptions
         * @property {Integer} index
-        * @property {ShapeCoords} coords
-        * @property {ShapeType} type
+        * @property {module:imageMaps.ShapeCoords} coords
+        * @property {module:imageMaps.ShapeType} type
         * @property {Url} url
-        * @property {ShapeStyles} style
+        * @property {module:imageMaps.ShapeStyles} style
         */
 
         /**
-        * @typedef {PlainObject} ShapeSecondaryOptions
+        * @typedef {PlainObject} module:imageMaps.ShapeSecondaryOptions
         * @property {string} text
         * @property {HTMLImageElement|string} href
         */
@@ -327,9 +317,11 @@ function jqueryImageMaps ($) {
         /**
          *
          * @param {Integer} index
-         * @param {ShapeInfoOptions} shapeOptions
-         * @param {ShapeSecondaryOptions} shapeSecondaryOptions
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeInfoOptions} shapeOptions
+         * @param {
+         *   module:imageMaps.ShapeSecondaryOptions
+         * } [shapeSecondaryOptions]
+         * @returns {void}
          */
         updateShapeInfo (index, shapeOptions, shapeSecondaryOptions) {
             const shapeInfo = this.allShapeInfo;
@@ -352,7 +344,7 @@ function jqueryImageMaps ($) {
 
         /**
          * @param {Integer} index
-         * @returns {undefined}
+         * @returns {void}
          */
         removeShapeInfo (index) {
             delete this.allShapeInfo['shape' + index];
@@ -361,22 +353,24 @@ function jqueryImageMaps ($) {
         /**
          *
          * @param {Integer} index
-         * @returns {ShapeInfoOptions|ShapeSecondaryOptions}
+         * @returns {module:imageMaps.ShapeInfoOptions|
+         *   module:imageMaps.ShapeSecondaryOptions}
          */
         getShapeInfo (index) {
             return this.allShapeInfo['shape' + index];
         }
 
         /**
-        * @typedef {PlainObject} AllShapeInfo
-        * @property {ShapeType} type
-        * @property {Coords} coords
+        * @typedef {PlainObject} module:imageMaps.AllShapeInfo
+        * @property {module:imageMaps.ShapeType} type
+        * @property {module:imageMaps.Coords} coords
         * @property {Integer} index
-        * @property {ShapeInfoOptions|ShapeSecondaryOptions} shape<num>
+        * @property {module:imageMaps.ShapeInfoOptions|
+        *   module:imageMaps.ShapeSecondaryOptions} shape<num>
         */
         /**
          *
-         * @returns {AllShapeInfo}
+         * @returns {module:imageMaps.AllShapeInfo}
          */
         getAllShapesInfo () {
             return $.extend(true, {}, this.allShapeInfo);
@@ -385,7 +379,7 @@ function jqueryImageMaps ($) {
         /**
          *
          * @param {Float[]} percentages
-         * @returns {undefined}
+         * @returns {void}
          */
         zoom (percentages) {
             zoom.call(this, percentages);
@@ -393,10 +387,10 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @returns {undefined}
+         * @returns {void}
          */
         enableClick () {
-            this.attachEvents(this.svgEl.find('._shape_face'), [{
+            this.attachEvents(this.svgEl.find('.' + shapeFaceClass), [{
                 type: 'touchstart', handler: onTouchStart
             }, {
                 type: 'click touchend', handler: onClickShapeFace
@@ -405,10 +399,10 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @returns {undefined}
+         * @returns {void}
          */
         disableClick () {
-            this.detachEvents(this.svgEl.find('._shape_face'), [{
+            this.detachEvents(this.svgEl.find('.' + shapeFaceClass), [{
                 type: 'touchstart', handler: onTouchStart
             }, {
                 type: 'click touchend', handler: onClickShapeFace
@@ -417,8 +411,8 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @param {ShapeCoords} coords
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeCoords} coords
+         * @returns {void}
          */
         setShapeCoords (coords) {
             this.shapeCoords = coords;
@@ -426,8 +420,8 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @param {VertexCoords} coords
-         * @returns {undefined}
+         * @param {module:imageMaps.VertexCoords} coords
+         * @returns {void}
          */
         setVertexCoords (coords) {
             this.vertexCoords = coords;
@@ -435,20 +429,20 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @param {ShapeElement} element
-         * @returns {undefined}
+         * @param {module:imageMaps.ShapeElement} element
+         * @returns {void}
          */
         setShapeElement (element) {
             this.shapeEl = element;
         }
 
         /**
-        * @typedef {Element} VertexElement
+        * @typedef {Element} module:imageMaps.VertexElement
         */
         /**
          *
-         * @param {VertexElement} element
-         * @returns {undefined}
+         * @param {module:imageMaps.VertexElement} element
+         * @returns {void}
          */
         setVertexElement (element) {
             this.vertexEl = element;
@@ -456,30 +450,30 @@ function jqueryImageMaps ($) {
 
         /**
          *
-         * @param {VertexElements} elements
-         * @returns {undefined}
+         * @param {module:imageMaps.VertexElements} elements
+         * @returns {void}
          */
         setVertexElements (elements) {
             this.vertexEls = elements;
         }
 
         /**
-        * @typedef {PlainObject} TypeHandler
+        * @typedef {PlainObject} module:imageMaps.TypeHandler
         * @property {string} type
         * @property {function} handler
         */
         /**
          * ImageMaps: 이미지맵 이벤트 할당.
-         * @param {Node|jQuery} element
-         * @param {TypeHandler[]} eventOptions
-         * @returns {undefined}
+         * @param {Node|external:jQuery} element
+         * @param {module:imageMaps.TypeHandler[]} eventOptions
+         * @returns {void}
          */
         attachEvents (element, eventOptions) {
             element = $(element);
 
             eventOptions.forEach(({type, handler}) => {
                 element.on(
-                    type + '.area',
+                    type + '.' + areaClass,
                     $.proxy(handler, this)
                 );
             });
@@ -487,9 +481,9 @@ function jqueryImageMaps ($) {
 
         /**
          * ImageMaps: 이미지맵 이벤트 해제.
-         * @param {jQuery} element
-         * @param {TypeHandler[]} eventOptions
-         * @returns {undefined}
+         * @param {external:jQuery} element
+         * @param {module:imageMaps.TypeHandler[]} eventOptions
+         * @returns {void}
          */
         detachEvents (element, eventOptions) {
             element = $(element);
@@ -501,9 +495,9 @@ function jqueryImageMaps ($) {
                     : '';
 
                 if (eventHandler) {
-                    element.off(eventType + '.area', eventHandler);
+                    element.off(eventType + '.' + areaClass, eventHandler);
                 } else {
-                    element.off(eventType + '.area');
+                    element.off(eventType + '.' + areaClass);
                 }
             });
         }
@@ -511,10 +505,11 @@ function jqueryImageMaps ($) {
     ImageMaps.getCoordsByRatio = getCoordsByRatio;
 
     /**
-     * @this ImageMaps
-     * @param {Coords} coords
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {?(module:imageMaps.Coords)} coords
      * @param {Url} linkUrl
-     * @returns {undefined}
+     * @returns {void}
      */
     function createMaps (coords, linkUrl) {
         // 최초 맵영역을 만드는 순간에 map 엘리먼트를 만들고 하위에 area 엘리먼트 생성.
@@ -612,7 +607,7 @@ function jqueryImageMaps ($) {
             }
         }
 
-        const index = this.mapEl.find('._shape_face').length;
+        const index = this.mapEl.find('.' + shapeFaceClass).length;
         let areaType = shapeType;
         let shapeSecondaryOptions = {};
 
@@ -655,12 +650,13 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {ShapeCoords} shapeCoords
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {module:imageMaps.ShapeCoords} shapeCoords
      * @param {string} uid
      * @param {Url} linkUrl
      * @param {Integer} index
-     * @returns {undefined}
+     * @returns {void}
      */
     function createOverlay (shapeCoords, uid, linkUrl, index) {
         const containerWidth = this.container.width(),
@@ -725,12 +721,13 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
      * @param {string} areaType
-     * @param {ShapeCoords} shapeCoords
+     * @param {module:imageMaps.ShapeCoords} shapeCoords
      * @param {Url} linkUrl
      * @param {string|Integer} index
-     * @returns {undefined}
+     * @returns {void}
      */
     function createArea (areaType, shapeCoords, linkUrl, index) {
         $(
@@ -744,12 +741,13 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {ShapeType} shapeType
-     * @param {ShapeCoords} shapeCoords
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {module:imageMaps.ShapeType} shapeType
+     * @param {module:imageMaps.ShapeCoords} shapeCoords
      * @param {Url} linkUrl
      * @param {string|Integer} index
-     * @returns {undefined}
+     * @returns {void}
      */
     function createShape (shapeType, shapeCoords, linkUrl, index) {
         if (shapeType === SHAPE.POLY) {
@@ -791,18 +789,19 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {PlainObject} ShapeOptions
+    * @typedef {PlainObject} module:imageMaps.ShapeOptions
     * @property {string} text
     * @property {string} href
-    * @property {ShapeType} type
+    * @property {module:imageMaps.ShapeType} type
     */
 
     /**
-     * @this ImageMaps
-     * @param {ShapeCoords} shapeCoords
-     * @param {ShapeElement} shapeEl
-     * @param {ShapeOptions} shapeOptions
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {module:imageMaps.ShapeCoords} shapeCoords
+     * @param {module:imageMaps.ShapeElement} [shapeEl]
+     * @param {module:imageMaps.ShapeOptions} [shapeOptions]
+     * @returns {void}
      */
     function drawShape (shapeCoords, shapeEl, shapeOptions) {
         shapeEl = shapeEl || this.shapeEl;
@@ -812,7 +811,7 @@ function jqueryImageMaps ($) {
             shapeEl.attr({
                 x: shapeCoords[0],
                 y: shapeCoords[1],
-                class: '_shape_face'
+                class: shapeFaceClass
             });
             if (shapeCoords[2]) {
                 shapeEl.attr('width', shapeCoords[2] - shapeCoords[0]);
@@ -835,7 +834,7 @@ function jqueryImageMaps ($) {
             shapeEl.attr({
                 cx: shapeCoords[0],
                 cy: shapeCoords[1],
-                class: '_shape_face'
+                class: shapeFaceClass
             });
             if (shapeCoords[2]) {
                 shapeEl.attr('r', shapeCoords[2]);
@@ -844,7 +843,7 @@ function jqueryImageMaps ($) {
             shapeEl.attr({
                 cx: shapeCoords[0],
                 cy: shapeCoords[1],
-                class: '_shape_face'
+                class: shapeFaceClass
             });
             if (shapeCoords[2]) {
                 shapeEl.attr('rx', shapeCoords[2]);
@@ -857,7 +856,7 @@ function jqueryImageMaps ($) {
                 x: shapeCoords[0],
                 y: shapeCoords[1],
                 'font-size': shapeCoords[2],
-                class: '_shape_face'
+                class: shapeFaceClass
             });
             shapeEl.text((shapeOptions && shapeOptions.text) || this.shapeText);
         } else if (shapeType === SHAPE.POLY) {
@@ -866,8 +865,9 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @returns {void}
      */
     function adjustTextShape () {
         const {shapeEl} = this;
@@ -892,16 +892,17 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {SVGRect[]} VertexElements One `SVGRect` element for each
-    *     vertex coordinate
+     * `SVGRect` element for each vertex coordinate
+    * @typedef {SVGRect[]} module:imageMaps.VertexElements One
     */
 
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @param {ShapeType} shapeType
-     * @param {ShapeCoords} shapeCoords
+     * @param {module:imageMaps.ShapeType} shapeType
+     * @param {module:imageMaps.ShapeCoords} shapeCoords
      * @param {Integer} index
-     * @returns {VertexElements}
+     * @returns {module:imageMaps.VertexElements}
      */
     function createVertex (shapeType, shapeCoords, index) {
         const vertexCoords = calculateVertexCoords(shapeType, shapeCoords);
@@ -922,18 +923,19 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {PlainObject} VertexCoords
+    * @typedef {PlainObject} module:imageMaps.VertexCoords
     * @property {Float} x
     * @property {Float} y
-    * @property {CursorType} type
+    * @property {module:imageMaps.CursorType} type
     */
 
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @param {VertexCoords} vertexCoords
-     * @param {VertexElements} vertexEls
-     * @param {ShapeType} shapeType
-     * @returns {undefined}
+     * @param {module:imageMaps.VertexCoords} vertexCoords
+     * @param {module:imageMaps.VertexElements} vertexEls
+     * @param {module:imageMaps.ShapeType} shapeType Not currently in use
+     * @returns {void}
      */
     function drawVertex (vertexCoords, vertexEls, shapeType) {
         vertexCoords.forEach((eachCoords, i) => {
@@ -943,20 +945,21 @@ function jqueryImageMaps ($) {
                 width: 7,
                 height: 7,
                 'data-direction': eachCoords.type,
-                class: '_shape_vertex'
+                class: shapeVertexClass
             }).css('cursor', getCursor(eachCoords.type));
         });
     }
 
     /**
-    * @typedef {Coords} ShapeCoords
+    * @typedef {module:imageMaps.Coords} module:imageMaps.ShapeCoords
     */
 
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @param {ShapeType} shapeType
-     * @param {ShapeCoords} shapeCoords
-     * @returns {VertexCoords}
+     * @param {module:imageMaps.ShapeType} shapeType
+     * @param {module:imageMaps.ShapeCoords} shapeCoords
+     * @returns {module:imageMaps.VertexCoords}
      */
     function calculateVertexCoords (shapeType, shapeCoords) {
         let vertexArr = [];
@@ -1018,15 +1021,16 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {ShapeCoords} shapeCoords
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {module:imageMaps.ShapeCoords} shapeCoords
      * @param {Element} areaEl
-     * @param {ShapeType} shapeType
-     * @returns {undefined}
+     * @param {module:imageMaps.ShapeType} [shapeType]
+     * @returns {void}
      */
     function drawArea (shapeCoords, areaEl, shapeType) {
         const shapeEl = this.svgEl.find(
-            '._shape_face[data-index="' + areaEl.data('index') + '"]'
+            '.' + shapeFaceClass + '[data-index="' + areaEl.data('index') + '"]'
         );
         shapeType = shapeType || this.shapeType;
 
@@ -1043,11 +1047,13 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {"col"|"row"|Direction|"ew"|"ns"|"nesw"|"nwse"} CursorType
+    * @typedef {"col"|"row"|Direction|"ew"|"ns"|"nesw"|"nwse"}
+    *   module:imageMaps.CursorType
     */
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @param {CursorType} type
+     * @param {module:imageMaps.CursorType} type
      *     CSS cursor resize type
      * @returns {string}
      */
@@ -1056,9 +1062,10 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {Event} e
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {Event} e The `touchstart` event
+     * @returns {void}
      */
     function onTouchStart (e) {
         const touchCoords = e.originalEvent.touches[0];
@@ -1067,14 +1074,15 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {Event} e
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {Event} e The `click touchend` event
+     * @returns {void}
      */
     function onClickShapeFace (e) {
         // IE8이 이외의 브라우저는 아래 계산 로직을 타지 않아도 된다.
         // IE8은 area 엘리먼트 클릭 시 href 속성의 url로 이동.
-        let targetAreaEl;
+        let targetAreaEl = $(e.currentTarget);
         if (e.currentTarget.tagName.toLowerCase() !== 'area') {
             e.preventDefault();
             if ((this.dragInfo.face.x && this.dragInfo.face.x !== e.pageX) ||
@@ -1105,9 +1113,10 @@ function jqueryImageMaps ($) {
     // drag & drop
 
     /**
-     * @this ImageMaps
-     * @param {Event} e
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {Event} e The `mousedown` event
+     * @returns {void}
      */
     function onMouseDown (e) {
         e.preventDefault();
@@ -1170,7 +1179,7 @@ function jqueryImageMaps ($) {
 
             const vertexTemp = [];
             const vertexEls = this.mapEl.find(
-                '._shape_vertex[data-index="' + index + '"]'
+                '.' + shapeVertexClass + '[data-index="' + index + '"]'
             );
             vertexEls.each(function () {
                 vertexTemp.push($(this));
@@ -1178,10 +1187,10 @@ function jqueryImageMaps ($) {
             this.setVertexElements(vertexTemp);
         }
 
-        if (targetEl.is('._shape_face')) {
+        if (targetEl.is('.' + shapeFaceClass)) {
             this.grabType = 'face';
             declareShape.call(this, targetEl, e.pageX, e.pageY);
-        } else if (targetEl.is('._shape_vertex')) {
+        } else if (targetEl.is('.' + shapeVertexClass)) {
             this.grabType = 'vertex';
             declareVertex.call(this, targetEl, index);
         }
@@ -1197,9 +1206,10 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {Event} e
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {Event} e The `mouseup` event
+     * @returns {void}
      */
     function onMouseUp (e) {
         const targetEl = $(e.target);
@@ -1222,9 +1232,10 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {Event} e
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {Event} e The `mousemove` event
+     * @returns {void}
      */
     function onMouseMove (e) {
         const targetEl = $(e.target);
@@ -1267,7 +1278,9 @@ function jqueryImageMaps ($) {
             drawShape.call(
                 this,
                 coords.movedCoords,
-                this.svgEl.find('._shape_face[data-index="' + index + '"]')
+                this.svgEl.find(
+                    '.' + shapeFaceClass + '[data-index="' + index + '"]'
+                )
             );
             drawArea.call(
                 this,
@@ -1282,8 +1295,8 @@ function jqueryImageMaps ($) {
             //    click 이벤트가 해제되는 이슈로 mousemove 안에 둠.
             if (
                 (
-                    targetEl.is('._shape_face') ||
-                    targetEl.is('._shape_vertex')
+                    targetEl.is('.' + shapeFaceClass) ||
+                    targetEl.is('.' + shapeVertexClass)
                 ) &&
                 (Math.abs(this.dragInfo.face.x - e.pageX) <= 1 ||
                     Math.abs(this.dragInfo.face.y - e.pageY) <= 1)
@@ -1301,9 +1314,10 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {Event} e
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {Event} e The `resize` event
+     * @returns {void}
      */
     function onResize (e) {
         const containerWidth = this.container.width();
@@ -1317,9 +1331,10 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
      * @param {Float[]} percentages
-     * @returns {undefined}
+     * @returns {void}
      */
     function zoom (percentages) {
         const widthPercentage = percentages[0];
@@ -1343,10 +1358,11 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
      * @param {Float} containerWidth
      * @param {Float} containerHeight
-     * @returns {undefined}
+     * @returns {void}
      */
     function redraw (containerWidth, containerHeight) {
         const {allShapeInfo} = this;
@@ -1369,7 +1385,7 @@ function jqueryImageMaps ($) {
             drawVertex(
                 calculateVertexCoords(item.type, item.coords),
                 this.svgEl.find(
-                    '._shape_vertex[data-index="' + item.index + '"]'
+                    '.' + shapeVertexClass + '[data-index="' + item.index + '"]'
                 ),
                 item.type
             );
@@ -1377,7 +1393,7 @@ function jqueryImageMaps ($) {
                 this,
                 item.coords,
                 this.svgEl.find(
-                    '._shape_face[data-index="' + item.index + '"]'
+                    '.' + shapeFaceClass + '[data-index="' + item.index + '"]'
                 ),
                 item
             );
@@ -1394,15 +1410,16 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {Element} ShapeElement
+    * @typedef {Element} module:imageMaps.ShapeElement
     */
 
     /**
-     * @this ImageMaps
-     * @param {ShapeElement} shapeEl
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {module:imageMaps.ShapeElement} shapeEl
      * @param {Float} x
      * @param {Float} y
-     * @returns {undefined}
+     * @returns {void}
      */
     function declareShape (shapeEl, x, y) {
         this.dragInfo.face.x = x;
@@ -1412,17 +1429,18 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {PlainObject} MovedCoords
-    * @property {Coords} movedCoords,
-    * @property {VertexCoords} vertexCoords,
-    * @property {ShapeElement} grabEl
+    * @typedef {PlainObject} module:imageMaps.MovedCoords
+    * @property {module:imageMaps.Coords} movedCoords,
+    * @property {module:imageMaps.VertexCoords} vertexCoords,
+    * @property {module:imageMaps.ShapeElement} grabEl
     */
 
     /**
-     * @this ImageMaps
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
      * @param {Float} x
      * @param {Float} y
-     * @returns {MovedCoords|undefined}
+     * @returns {module:imageMaps.MovedCoords|void}
      */
     function getMovedShapeCoords (x, y) {
         const {shapeEl} = this;
@@ -1467,7 +1485,7 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {GenericArray} Coords
+    * @typedef {GenericArray} module:imageMaps.Coords
     * @property {Float} 0
     * @property {Float} 1
     * @property {Float} 2
@@ -1475,8 +1493,9 @@ function jqueryImageMaps ($) {
     */
 
     /**
-     * @this ImageMaps
-     * @returns {Coords}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @returns {module:imageMaps.Coords}
      */
     function determineShape () {
         const {shapeEl, shapeType} = this;
@@ -1517,10 +1536,11 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
-     * @param {jQuery} vertexEl
-     * @param {Integer} index
-     * @returns {undefined}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {external:jQuery} vertexEl
+     * @param {Integer} index Not currently in use
+     * @returns {void}
      */
     function declareVertex (vertexEl, index) {
         this.setVertexElement(vertexEl);
@@ -1540,10 +1560,11 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
      * @param {Float} x
      * @param {Float} y
-     * @returns {undefined|MovedVertexCoords}
+     * @returns {module:imageMaps.MovedVertexCoords|void}
      */
     function getMovedVertexCoords (x, y) {
         if (this.vertexEl.attr('data-movable') === 'false') {
@@ -1737,14 +1758,15 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {"se"|"sw"|"ne"|"nw"|"w"|"s"|"n"|"e"} Direction
+    * @typedef {"se"|"sw"|"ne"|"nw"|"w"|"s"|"n"|"e"} module:imageMaps.Direction
     */
 
     /**
-     * @this ImageMaps
-     * @param {RectCoords} coords
-     * @param {Direction} direction
-     * @returns {RectCoords}
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
+     * @param {module:imageMaps.RectCoords} coords
+     * @param {module:imageMaps.Direction} direction
+     * @returns {module:imageMaps.RectCoords}
      */
     function getValidCoordsForRect (coords, direction) {
         let [topLeftX, topLeftY, bottomRightX, bottomRightY] = coords;
@@ -1771,7 +1793,8 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * @this ImageMaps
+     * @memberof module:imageMaps.jqueryImageMaps~
+     * @this module:imageMaps~ImageMaps
      * @param {Float} coordsDiff
      * @returns {Float}
      */
@@ -1788,12 +1811,13 @@ function jqueryImageMaps ($) {
     }
 
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @param {Coords} coords
-     * @param {ShapeType} shapeType
+     * @param {module:imageMaps.Coords} coords
+     * @param {module:imageMaps.ShapeType} shapeType
      * @param {Float} widthRatio
      * @param {Float} heightRatio
-     * @returns {Coords}
+     * @returns {module:imageMaps.Coords}
      */
     function getCoordsByRatio (coords, shapeType, widthRatio, heightRatio) {
         let adjustCoords = [];
@@ -1808,7 +1832,7 @@ function jqueryImageMaps ($) {
                 coords[3] * heightRatio
             ];
         } else if (shapeType === SHAPE.CIRCLE) {
-            let radiusRatio = 1;
+            let radiusRatio;
 
             if (widthRatio >= heightRatio) {
                 radiusRatio = heightRatio;
@@ -1843,7 +1867,7 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {GenericArray} RectCoords
+    * @typedef {GenericArray} module:imageMaps.RectCoords
     * @property {Float} 0
     * @property {Float} 1
     * @property {Float} 2
@@ -1851,9 +1875,10 @@ function jqueryImageMaps ($) {
     */
 
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @param {ShapeElement} shapeEl
-     * @returns {RectCoords}
+     * @param {module:imageMaps.ShapeElement} shapeEl
+     * @returns {module:imageMaps.RectCoords}
      */
     function convertTextToRectCoords (shapeEl) {
         const bottomLeftX = parseFloat(shapeEl.attr('x'));
@@ -1872,8 +1897,9 @@ function jqueryImageMaps ($) {
     }
 
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @param {string} coords
+     * @param {string} [coords]
      * @returns {?(Float[])}
      */
     function convertStringToNumber (coords) {
@@ -1888,12 +1914,14 @@ function jqueryImageMaps ($) {
 
     /**
      * GUID: img의 usemap 속성, map의 name 속성을 unique id로 생성.
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @see <http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript>.
+     * @see http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
      * @returns {string}
      */
     function guid () {
         /**
+         * @memberof module:imageMaps.jqueryImageMaps~guid.
          * @static
          * @returns {string}
          */
@@ -1907,17 +1935,18 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {PlainObject} Dimensions
+    * @typedef {PlainObject} module:imageMaps.Dimensions
     * @property {Float} width
     * @property {Float} height
     */
 
     /**
+     * @memberof module:imageMaps.jqueryImageMaps~
      * @static
      * @param {HTMLImageElement|string} imageElOrUrl
      * @todo If this is to handle an image element, other contexts which use
      *    the passed in URL should also
-     * @returns {Dimensions}
+     * @returns {module:imageMaps.Dimensions}
      */
     function getNaturalImageSize (imageElOrUrl) {
         const imageObj = new Image();
@@ -1927,7 +1956,10 @@ function jqueryImageMaps ($) {
                 height: imageElOrUrl.naturalHeight
             };
         }
-        imageObj.src = imageElOrUrl.src || imageElOrUrl;
+        if (typeof imageElOrUrl === 'string') {
+            imageElOrUrl = {src: imageElOrUrl};
+        }
+        imageObj.src = imageElOrUrl.src;
         return {
             width: imageObj.width,
             height: imageObj.height
@@ -1936,10 +1968,10 @@ function jqueryImageMaps ($) {
 
     $.fn.extend({
         /**
-         *
-         * @param {Coords} coords
+         * @function external:"jQuery.fn".createMaps
+         * @param {?(module:imageMaps.Coords)} coords
          * @param {Url} linkUrl
-         * @returns {jQuery}
+         * @returns {external:jQuery}
          */
         createMaps (coords, linkUrl) {
             this.data('image_maps_inst').createMaps(coords, linkUrl);
@@ -1947,11 +1979,11 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
-         * @param {Coords} coords
+         * @function external:"jQuery.fn".addShape
+         * @param {?(module:imageMaps.Coords)} coords
          * @param {Url} linkUrl
-         * @param {ShapeType} shapeType
-         * @returns {jQuery}
+         * @param {module:imageMaps.ShapeType} shapeType
+         * @returns {external:jQuery}
          */
         addShape (coords, linkUrl, shapeType) {
             this.data('image_maps_inst').addShape(coords, linkUrl, shapeType);
@@ -1959,9 +1991,9 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
-         * @param {Integer} index
-         * @returns {jQuery}
+         * @function external:"jQuery.fn".removeShape
+         * @param {Integer} [index]
+         * @returns {external:jQuery}
          */
         removeShape (index) {
             this.data('image_maps_inst').removeShape(index);
@@ -1969,16 +2001,16 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
-         * @returns {jQuery}
+         * @function external:"jQuery.fn".removeAllShapes
+         * @returns {external:jQuery}
          */
         removeAllShapes () {
             this.data('image_maps_inst').removeAllShapes();
         },
 
         /**
-         *
-         * @returns {jQuery}
+         * @function external:"jQuery.fn".destroy
+         * @returns {external:jQuery}
          */
         destroy () {
             const imageMapsObj = this.data('image_maps_inst');
@@ -1991,9 +2023,9 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
-         * @param {ShapeStyles} styleOptions
-         * @returns {jQuery}
+         * @function external:"jQuery.fn".setShapeStyle
+         * @param {module:imageMaps.ShapeStyles} [styleOptions]
+         * @returns {external:jQuery}
          */
         setShapeStyle (styleOptions) {
             this.data('image_maps_inst').setShapeStyle(styleOptions);
@@ -2001,10 +2033,10 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
+         * @function external:"jQuery.fn".setUrl
          * @param {Url} linkUrl
          * @param {Integer} index
-         * @returns {jQuery}
+         * @returns {external:jQuery}
          */
         setUrl (linkUrl, index) {
             this.data('image_maps_inst').setUrl(linkUrl, index);
@@ -2012,10 +2044,10 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
+         * @function external:"jQuery.fn".setTextShape
          * @param {string} text
-         * @param {ShapeStyles} styleOptions
-         * @returns {jQuery}
+         * @param {module:imageMaps.ShapeStyles} [styleOptions]
+         * @returns {external:jQuery}
          */
         setTextShape (text, styleOptions) {
             this.data('image_maps_inst').setTextShape(text, styleOptions);
@@ -2023,10 +2055,10 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
+         * @function external:"jQuery.fn".setImageShape
          * @param {Url} imageUrl
-         * @param {ShapeStyles} styleOptions
-         * @returns {jQuery}
+         * @param {module:imageMaps.ShapeStyles} [styleOptions]
+         * @returns {external:jQuery}
          */
         setImageShape (imageUrl, styleOptions) {
             this.data('image_maps_inst').setImageShape(imageUrl, styleOptions);
@@ -2034,36 +2066,36 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
-         * @returns {undefined}
+         * @function external:"jQuery.fn".enableClick
+         * @returns {void}
          */
         enableClick () {
             this.data('image_maps_inst').enableClick();
         },
 
         /**
-         *
-         * @returns {undefined}
+         * @function external:"jQuery.fn".disableClick
+         * @returns {void}
          */
         disableClick () {
             this.data('image_maps_inst').disableClick();
         },
 
         /**
-         *
-         * @returns {AllShapeInfo}
+         * @function external:"jQuery.fn".getAllShapes
+         * @returns {module:imageMaps.AllShapeInfo}
          */
         getAllShapes () {
             return this.data('image_maps_inst').getAllShapesInfo();
         },
 
         /**
-         *
-         * @param {Coords} coords
-         * @param {ShapeType} shapeType
+         * @function external:"jQuery.fn".getCoordsByRatio
+         * @param {module:imageMaps.Coords} coords
+         * @param {module:imageMaps.ShapeType} shapeType
          * @param {Float} widthRatio
          * @param {Float} heightRatio
-         * @returns {Coords}
+         * @returns {module:imageMaps.Coords}
          */
         getCoordsByRatio (coords, shapeType, widthRatio, heightRatio) {
             return ImageMaps.getCoordsByRatio(
@@ -2072,9 +2104,9 @@ function jqueryImageMaps ($) {
         },
 
         /**
-         *
+         * @function external:"jQuery.fn".zoom
          * @param {Float[]} percentages
-         * @returns {undefined}
+         * @returns {void}
          */
         zoom (percentages) {
             this.data('image_maps_inst').zoom(percentages);
@@ -2082,10 +2114,11 @@ function jqueryImageMaps ($) {
     });
 
     /**
-     * @this jQuery
-     * @param {ImageMapOptions} options
+     * @function external:"jQuery.fn".imageMaps
+     * @this external:jQuery
+     * @param {module:imageMaps.ImageMapOptions} [options]
      * @throws {Error}
-     * @returns {ImageMaps|undefined}
+     * @returns {module:imageMaps.ImageMaps|void}
      */
     $.fn.imageMaps = function (options) {
         if (this.length === 1) {
