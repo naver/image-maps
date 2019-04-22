@@ -27,7 +27,12 @@
     "email": "byeongjin.an@navercorp.com",
     "url": "https://github.com/ahnbj2000"
   },
-  "contributors": ["ahnbj2000", "brettz9", "todtod80", "beanmilk"],
+  "contributors": [
+    "ahnbj2000",
+    "brettz9",
+    "todtod80",
+    "beanmilk"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/naver/ImageMaps/issues"
@@ -37,36 +42,39 @@
   "browserslist": [
     "cover 100%"
   ],
+  "peerDependencies": {
+    "jquery": "^3.4.0"
+  },
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.4.0",
-    "@babel/polyfill": "^7.4.0",
-    "@babel/preset-env": "^7.4.2",
+    "@babel/core": "^7.4.3",
+    "@babel/polyfill": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
     "@mysticatea/eslint-plugin": "^9.0.1",
     "axe-testcafe": "^1.1.0",
     "eslint": "^5.16.0",
-    "eslint-config-ash-nazg": "^1.0.2",
+    "eslint-config-ash-nazg": "^2.0.0",
     "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-compat": "^3.1.0",
+    "eslint-plugin-compat": "^3.1.1",
     "eslint-plugin-eslint-comments": "^3.1.1",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-jsdoc": "^4.6.0",
+    "eslint-plugin-import": "^2.17.1",
+    "eslint-plugin-jsdoc": "^4.8.3",
     "eslint-plugin-markdown": "^1.0.0",
     "eslint-plugin-no-use-extend-native": "^0.4.0",
-    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-testcafe": "^0.2.1",
-    "eslint-plugin-unicorn": "^8.0.1",
-    "jquery": "^3.3.1",
+    "eslint-plugin-unicorn": "^8.0.2",
+    "jquery": "^3.4.0",
     "jsdoc": "^3.5.5",
     "node-static": "^0.7.11",
-    "opn-cli": "^4.0.0",
-    "rollup": "1.7.4",
+    "opn-cli": "^4.1.0",
+    "rollup": "1.10.0",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-node-resolve": "^4.2.3",
     "rollup-plugin-re": "^1.0.7",
     "rollup-plugin-terser": "^4.0.4",
-    "testcafe": "^1.1.0"
+    "testcafe": "^1.1.2"
   }
 }
