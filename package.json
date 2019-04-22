@@ -1,6 +1,6 @@
 {
   "name": "imagemaps",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "jQuery plugin which can graphically build area maps on an image",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
