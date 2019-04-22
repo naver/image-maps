@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/naver/ImageMaps.git"
+    "url": "git+https://github.com/naver/image-maps.git"
   },
   "keywords": [
     "jquery",
@@ -24,7 +24,7 @@
   ],
   "author": {
     "name": "Naver Corp.",
-    "email": "byeongjin.an@navercorp.com",
+    "email": "ahnbj2000@naver.com",
     "url": "https://github.com/ahnbj2000"
   },
   "contributors": [
@@ -35,9 +35,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/naver/ImageMaps/issues"
+    "url": "https://github.com/naver/image-maps/issues"
   },
-  "homepage": "https://github.com/naver/ImageMaps#readme",
+  "homepage": "https://github.com/naver/image-maps#readme",
   "engines": {},
   "browserslist": [
     "cover 100%"
