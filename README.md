@@ -9,7 +9,7 @@ image maps jQuery plugin
 
 ## example
 
-<http://naver.github.io/image-maps/>
+<https://naver.github.io/image-maps/>
 
 ## LICENSE
 

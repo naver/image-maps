@@ -5,7 +5,7 @@
 /**
  * The jQuery plugin namespace.
  * @external "jQuery.fn"
- * @see {@link http://learn.jquery.com/plugins/|jQuery Plugins}
+ * @see {@link https://learn.jquery.com/plugins/|jQuery Plugins}
  */
 /**
  * @typedef {number} Integer

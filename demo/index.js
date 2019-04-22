@@ -104,27 +104,5 @@ $('#maps_zoom').on('click', function (e) {
 $('#view').on('click', function (e) {
     e.preventDefault();
 
-    const allShapes = $('._image_maps').getAllShapes();
-    viewEl.removeAllShapes();
-    $.each(allShapes, function (index, item) {
-        viewEl.setShapeStyle(item.style);
-        if (item.href) {
-            viewEl.setImageShape(item.href);
-        }
-        if (item.text) {
-            viewEl.setTextShape(item.text);
-        }
-
-        const originalImg = $('._imageMaps_area').find('img');
-        const viewImage = $('._imageMaps_area_view').find('img');
-        const widthRatio = originalImg.width();
-        const heightRatio = originalImg.height();
-        const newCoords = viewEl.getCoordsByRatio(
-            item.coords,
-            item.type,
-            viewImage.width() / widthRatio,
-            viewImage.height() / heightRatio
-        );
-        viewEl.addShape(newCoords, item.url, item.type);
-    });
+    $('._image_maps').copyImageMapsTo($('._image_maps_view'));
 });

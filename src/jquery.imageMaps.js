@@ -24,8 +24,8 @@
 * imageMaps 1.1.0
 * jquery plugin which can be partially linked to the image
 *
-* https://github.com/naver/ImageMaps
-* demo - http://naver.github.io/ImageMaps/
+* https://github.com/naver/image-maps
+* demo - https://naver.github.io/image-maps/
 *
 * Released on: July 6, 2016
 * @module imageMaps
@@ -297,6 +297,35 @@ function jqueryImageMaps ($) {
         removeImageMaps () {
             this.removeAllShapes();
             this.svgEl && this.svgEl.remove();
+        }
+
+        /**
+         *
+         * @param {external:jQuery} targetEl
+         * @returns {void}
+         */
+        copyImageMapsTo (targetEl) {
+            const allShapes = this.getAllShapesInfo();
+            targetEl.removeAllShapes();
+            $.each(allShapes, (index, item) => {
+                targetEl.setShapeStyle(item.style);
+                if (item.href) {
+                    targetEl.setImageShape(item.href);
+                }
+                if (item.text) {
+                    targetEl.setTextShape(item.text);
+                }
+
+                const widthRatio = this.container.width();
+                const heightRatio = this.container.height();
+                const newCoords = getCoordsByRatio(
+                    item.coords,
+                    item.type,
+                    targetEl.width() / widthRatio,
+                    targetEl.height() / heightRatio
+                );
+                targetEl.addShape(newCoords, item.url, item.type);
+            });
         }
 
         /**
@@ -1916,7 +1945,7 @@ function jqueryImageMaps ($) {
      * GUID: img의 usemap 속성, map의 name 속성을 unique id로 생성.
      * @memberof module:imageMaps.jqueryImageMaps~
      * @static
-     * @see http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+     * @see https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
      * @returns {string}
      */
     function guid () {
@@ -1975,6 +2004,16 @@ function jqueryImageMaps ($) {
          */
         createMaps (coords, linkUrl) {
             this.data('image_maps_inst').createMaps(coords, linkUrl);
+            return this;
+        },
+
+        /**
+         *
+         * @param {external:jQuery} targetEl
+         * @returns {external:jQuery}
+         */
+        copyImageMapsTo (targetEl) {
+            this.data('image_maps_inst').copyImageMapsTo(targetEl);
             return this;
         },
 
