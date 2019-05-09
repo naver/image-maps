@@ -100,18 +100,21 @@ function _nonIterableRest() {
 * imageMaps 1.1.0
 * jquery plugin which can be partially linked to the image
 *
-* https://github.com/naver/ImageMaps
-* demo - http://naver.github.io/ImageMaps/
+* https://github.com/naver/image-maps
+* demo - https://naver.github.io/image-maps/
 *
 * Released on: July 6, 2016
 * @module imageMaps
 */
-
+var shapeFaceClass = '_shape_face';
+var shapeVertexClass = '_shape_vertex';
+var areaClass = 'area';
 /**
 * @typedef
 * {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|"polyline"|"polygon"}
 * module:imageMaps.ShapeType
 */
+
 var SHAPE = {
   RECT: 'rect',
   CIRCLE: 'circle',
@@ -354,7 +357,7 @@ function jqueryImageMaps($) {
         }
 
         var areaEl = this.mapEl.find('area[data-index="' + index + '"]');
-        var shapeEl = this.svgEl.find('._shape_face[data-index="' + index + '"]');
+        var shapeEl = this.svgEl.find('.' + shapeFaceClass + '[data-index="' + index + '"]');
         this.detachEvents(shapeEl, [{
           type: 'click touchend'
         }]);
@@ -376,7 +379,7 @@ function jqueryImageMaps($) {
           return;
         }
 
-        var allShapeEls = this.svgEl.find('._shape_face');
+        var allShapeEls = this.svgEl.find('.' + shapeFaceClass);
         allShapeEls.each(function (i, shapeEl) {
           _this.removeShape($(shapeEl).data('index'));
         });
@@ -392,6 +395,38 @@ function jqueryImageMaps($) {
       value: function removeImageMaps() {
         this.removeAllShapes();
         this.svgEl && this.svgEl.remove();
+      }
+      /**
+       *
+       * @param {external:jQuery} targetEl
+       * @returns {void}
+       */
+
+    }, {
+      key: "copyImageMapsTo",
+      value: function copyImageMapsTo(targetEl) {
+        var _this2 = this;
+
+        var allShapes = this.getAllShapesInfo();
+        targetEl.removeAllShapes();
+        $.each(allShapes, function (index, item) {
+          targetEl.setShapeStyle(item.style);
+
+          if (item.href) {
+            targetEl.setImageShape(item.href);
+          }
+
+          if (item.text) {
+            targetEl.setTextShape(item.text);
+          }
+
+          var widthRatio = _this2.container.width();
+
+          var heightRatio = _this2.container.height();
+
+          var newCoords = getCoordsByRatio(item.coords, item.type, targetEl.width() / widthRatio, targetEl.height() / heightRatio);
+          targetEl.addShape(newCoords, item.url, item.type);
+        });
       }
       /**
       * @typedef {PlainObject} module:imageMaps.ShapeInfoOptions
@@ -490,7 +525,7 @@ function jqueryImageMaps($) {
     }, {
       key: "enableClick",
       value: function enableClick() {
-        this.attachEvents(this.svgEl.find('._shape_face'), [{
+        this.attachEvents(this.svgEl.find('.' + shapeFaceClass), [{
           type: 'touchstart',
           handler: onTouchStart
         }, {
@@ -506,7 +541,7 @@ function jqueryImageMaps($) {
     }, {
       key: "disableClick",
       value: function disableClick() {
-        this.detachEvents(this.svgEl.find('._shape_face'), [{
+        this.detachEvents(this.svgEl.find('.' + shapeFaceClass), [{
           type: 'touchstart',
           handler: onTouchStart
         }, {
@@ -589,13 +624,13 @@ function jqueryImageMaps($) {
     }, {
       key: "attachEvents",
       value: function attachEvents(element, eventOptions) {
-        var _this2 = this;
+        var _this3 = this;
 
         element = $(element);
         eventOptions.forEach(function (_ref) {
           var type = _ref.type,
               handler = _ref.handler;
-          element.on(type + '.area', $.proxy(handler, _this2));
+          element.on(type + '.' + areaClass, $.proxy(handler, _this3));
         });
       }
       /**
@@ -608,19 +643,19 @@ function jqueryImageMaps($) {
     }, {
       key: "detachEvents",
       value: function detachEvents(element, eventOptions) {
-        var _this3 = this;
+        var _this4 = this;
 
         element = $(element);
         eventOptions.forEach(function (_ref2) {
           var type = _ref2.type,
               handler = _ref2.handler;
           var eventType = type || '';
-          var eventHandler = handler ? $.proxy(handler, _this3) : '';
+          var eventHandler = handler ? $.proxy(handler, _this4) : '';
 
           if (eventHandler) {
-            element.off(eventType + '.area', eventHandler);
+            element.off(eventType + '.' + areaClass, eventHandler);
           } else {
-            element.off(eventType + '.area');
+            element.off(eventType + '.' + areaClass);
           }
         });
       }
@@ -708,7 +743,7 @@ function jqueryImageMaps($) {
       }
     }
 
-    var index = this.mapEl.find('._shape_face').length;
+    var index = this.mapEl.find('.' + shapeFaceClass).length;
     var areaType = shapeType;
     var shapeSecondaryOptions = {};
 
@@ -905,7 +940,7 @@ function jqueryImageMaps($) {
       shapeEl.attr({
         x: shapeCoords[0],
         y: shapeCoords[1],
-        "class": '_shape_face'
+        "class": shapeFaceClass
       });
 
       if (shapeCoords[2]) {
@@ -927,7 +962,7 @@ function jqueryImageMaps($) {
       shapeEl.attr({
         cx: shapeCoords[0],
         cy: shapeCoords[1],
-        "class": '_shape_face'
+        "class": shapeFaceClass
       });
 
       if (shapeCoords[2]) {
@@ -937,7 +972,7 @@ function jqueryImageMaps($) {
       shapeEl.attr({
         cx: shapeCoords[0],
         cy: shapeCoords[1],
-        "class": '_shape_face'
+        "class": shapeFaceClass
       });
 
       if (shapeCoords[2]) {
@@ -952,7 +987,7 @@ function jqueryImageMaps($) {
         x: shapeCoords[0],
         y: shapeCoords[1],
         'font-size': shapeCoords[2],
-        "class": '_shape_face'
+        "class": shapeFaceClass
       });
       shapeEl.text(shapeOptions && shapeOptions.text || this.shapeText);
     }
@@ -1035,7 +1070,7 @@ function jqueryImageMaps($) {
         width: 7,
         height: 7,
         'data-direction': eachCoords.type,
-        "class": '_shape_vertex'
+        "class": shapeVertexClass
       }).css('cursor', getCursor(eachCoords.type));
     });
   }
@@ -1144,7 +1179,7 @@ function jqueryImageMaps($) {
 
 
   function drawArea(shapeCoords, areaEl, shapeType) {
-    var shapeEl = this.svgEl.find('._shape_face[data-index="' + areaEl.data('index') + '"]');
+    var shapeEl = this.svgEl.find('.' + shapeFaceClass + '[data-index="' + areaEl.data('index') + '"]');
     shapeType = shapeType || this.shapeType;
 
     if (shapeType === SHAPE.TEXT) {
@@ -1281,17 +1316,17 @@ function jqueryImageMaps($) {
       shapeEl.css('fill', '#ffffff');
       this.setVertexCoords(calculateVertexCoords(shapeType, coords));
       var vertexTemp = [];
-      var vertexEls = this.mapEl.find('._shape_vertex[data-index="' + index + '"]');
+      var vertexEls = this.mapEl.find('.' + shapeVertexClass + '[data-index="' + index + '"]');
       vertexEls.each(function () {
         vertexTemp.push($(this));
       });
       this.setVertexElements(vertexTemp);
     }
 
-    if (targetEl.is('._shape_face')) {
+    if (targetEl.is('.' + shapeFaceClass)) {
       this.grabType = 'face';
       declareShape.call(this, targetEl, e.pageX, e.pageY);
-    } else if (targetEl.is('._shape_vertex')) {
+    } else if (targetEl.is('.' + shapeVertexClass)) {
       this.grabType = 'vertex';
       declareVertex.call(this, targetEl, index);
     }
@@ -1376,14 +1411,14 @@ function jqueryImageMaps($) {
       }
 
       var index = parseInt(coords.grabEl.attr('data-index'));
-      drawShape.call(this, coords.movedCoords, this.svgEl.find('._shape_face[data-index="' + index + '"]'));
+      drawShape.call(this, coords.movedCoords, this.svgEl.find('.' + shapeFaceClass + '[data-index="' + index + '"]'));
       drawArea.call(this, coords.movedCoords, this.mapEl.find('area[data-index="' + index + '"]')); // svg 내 엘리먼트들은 z-index 영향을 받지 않고 document 순서에 영향을 받는다.
       // 그래서 drag 시 다른 요소들보다 최상위에 두려면 엘리먼트 순서를 부모의 가장 하위에 두어야 한다.
       // mousedown에서 이 로직을 넣을 경우,
       // 외부에서 click 이벤트를 할당했을 때 mousedown 핸들러에서 dom 우선순위 조정하는 과정에서
       //    click 이벤트가 해제되는 이슈로 mousemove 안에 둠.
 
-      if ((targetEl.is('._shape_face') || targetEl.is('._shape_vertex')) && (Math.abs(this.dragInfo.face.x - e.pageX) <= 1 || Math.abs(this.dragInfo.face.y - e.pageY) <= 1)) {
+      if ((targetEl.is('.' + shapeFaceClass) || targetEl.is('.' + shapeVertexClass)) && (Math.abs(this.dragInfo.face.x - e.pageX) <= 1 || Math.abs(this.dragInfo.face.y - e.pageY) <= 1)) {
         this.svgEl.append(targetEl.parent());
       }
 
@@ -1415,7 +1450,7 @@ function jqueryImageMaps($) {
 
 
   function _zoom(percentages) {
-    var _this4 = this;
+    var _this5 = this;
 
     var widthPercentage = percentages[0];
     var heightPercentage = percentages.length < 2 ? widthPercentage : percentages[1];
@@ -1426,8 +1461,8 @@ function jqueryImageMaps($) {
       height: containerHeight + 'px'
     });
     setTimeout(function () {
-      if (_this4.svgEl && _this4.svgEl.length > 0) {
-        redraw.call(_this4, containerWidth, containerHeight);
+      if (_this5.svgEl && _this5.svgEl.length > 0) {
+        redraw.call(_this5, containerWidth, containerHeight);
       }
     });
   }
@@ -1441,7 +1476,7 @@ function jqueryImageMaps($) {
 
 
   function redraw(containerWidth, containerHeight) {
-    var _this5 = this;
+    var _this6 = this;
 
     var allShapeInfo = this.allShapeInfo;
     var widthRatio = containerWidth / this.containerWidth;
@@ -1455,9 +1490,9 @@ function jqueryImageMaps($) {
     });
     $.each(allShapeInfo, function (index, item) {
       item.coords = getCoordsByRatio(item.coords, item.type, widthRatio, heightRatio);
-      drawVertex(calculateVertexCoords(item.type, item.coords), _this5.svgEl.find('._shape_vertex[data-index="' + item.index + '"]'), item.type);
-      drawShape.call(_this5, item.coords, _this5.svgEl.find('._shape_face[data-index="' + item.index + '"]'), item);
-      drawArea.call(_this5, item.coords, _this5.mapEl.find('area[data-index="' + item.index + '"]'), item.type);
+      drawVertex(calculateVertexCoords(item.type, item.coords), _this6.svgEl.find('.' + shapeVertexClass + '[data-index="' + item.index + '"]'), item.type);
+      drawShape.call(_this6, item.coords, _this6.svgEl.find('.' + shapeFaceClass + '[data-index="' + item.index + '"]'), item);
+      drawArea.call(_this6, item.coords, _this6.mapEl.find('area[data-index="' + item.index + '"]'), item.type);
     });
     this.containerWidth = containerWidth;
     this.containerHeight = containerHeight;
@@ -1855,7 +1890,7 @@ function jqueryImageMaps($) {
    * GUID: img의 usemap 속성, map의 name 속성을 unique id로 생성.
    * @memberof module:imageMaps.jqueryImageMaps~
    * @static
-   * @see http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+   * @see https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
    * @returns {string}
    */
 
@@ -1920,6 +1955,16 @@ function jqueryImageMaps($) {
      */
     createMaps: function createMaps(coords, linkUrl) {
       this.data('image_maps_inst').createMaps(coords, linkUrl);
+      return this;
+    },
+
+    /**
+     *
+     * @param {external:jQuery} targetEl
+     * @returns {external:jQuery}
+     */
+    copyImageMapsTo: function copyImageMapsTo(targetEl) {
+      this.data('image_maps_inst').copyImageMapsTo(targetEl);
       return this;
     },
 
