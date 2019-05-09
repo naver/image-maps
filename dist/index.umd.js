@@ -403,38 +403,6 @@
           this.svgEl && this.svgEl.remove();
         }
         /**
-         *
-         * @param {external:jQuery} targetEl
-         * @returns {void}
-         */
-
-      }, {
-        key: "copyImageMapsTo",
-        value: function copyImageMapsTo(targetEl) {
-          var _this2 = this;
-
-          var allShapes = this.getAllShapesInfo();
-          targetEl.removeAllShapes();
-          $.each(allShapes, function (index, item) {
-            targetEl.setShapeStyle(item.style);
-
-            if (item.href) {
-              targetEl.setImageShape(item.href);
-            }
-
-            if (item.text) {
-              targetEl.setTextShape(item.text);
-            }
-
-            var widthRatio = _this2.container.width();
-
-            var heightRatio = _this2.container.height();
-
-            var newCoords = getCoordsByRatio(item.coords, item.type, targetEl.width() / widthRatio, targetEl.height() / heightRatio);
-            targetEl.addShape(newCoords, item.url, item.type);
-          });
-        }
-        /**
         * @typedef {PlainObject} module:imageMaps.ShapeInfoOptions
         * @property {Integer} index
         * @property {module:imageMaps.ShapeCoords} coords
@@ -630,13 +598,13 @@
       }, {
         key: "attachEvents",
         value: function attachEvents(element, eventOptions) {
-          var _this3 = this;
+          var _this2 = this;
 
           element = $(element);
           eventOptions.forEach(function (_ref) {
             var type = _ref.type,
                 handler = _ref.handler;
-            element.on(type + '.' + areaClass, $.proxy(handler, _this3));
+            element.on(type + '.' + areaClass, $.proxy(handler, _this2));
           });
         }
         /**
@@ -649,14 +617,14 @@
       }, {
         key: "detachEvents",
         value: function detachEvents(element, eventOptions) {
-          var _this4 = this;
+          var _this3 = this;
 
           element = $(element);
           eventOptions.forEach(function (_ref2) {
             var type = _ref2.type,
                 handler = _ref2.handler;
             var eventType = type || '';
-            var eventHandler = handler ? $.proxy(handler, _this4) : '';
+            var eventHandler = handler ? $.proxy(handler, _this3) : '';
 
             if (eventHandler) {
               element.off(eventType + '.' + areaClass, eventHandler);
@@ -1456,7 +1424,7 @@
 
 
     function _zoom(percentages) {
-      var _this5 = this;
+      var _this4 = this;
 
       var widthPercentage = percentages[0];
       var heightPercentage = percentages.length < 2 ? widthPercentage : percentages[1];
@@ -1467,8 +1435,8 @@
         height: containerHeight + 'px'
       });
       setTimeout(function () {
-        if (_this5.svgEl && _this5.svgEl.length > 0) {
-          redraw.call(_this5, containerWidth, containerHeight);
+        if (_this4.svgEl && _this4.svgEl.length > 0) {
+          redraw.call(_this4, containerWidth, containerHeight);
         }
       });
     }
@@ -1482,7 +1450,7 @@
 
 
     function redraw(containerWidth, containerHeight) {
-      var _this6 = this;
+      var _this5 = this;
 
       var allShapeInfo = this.allShapeInfo;
       var widthRatio = containerWidth / this.containerWidth;
@@ -1496,9 +1464,9 @@
       });
       $.each(allShapeInfo, function (index, item) {
         item.coords = getCoordsByRatio(item.coords, item.type, widthRatio, heightRatio);
-        drawVertex(calculateVertexCoords(item.type, item.coords), _this6.svgEl.find('.' + shapeVertexClass + '[data-index="' + item.index + '"]'), item.type);
-        drawShape.call(_this6, item.coords, _this6.svgEl.find('.' + shapeFaceClass + '[data-index="' + item.index + '"]'), item);
-        drawArea.call(_this6, item.coords, _this6.mapEl.find('area[data-index="' + item.index + '"]'), item.type);
+        drawVertex(calculateVertexCoords(item.type, item.coords), _this5.svgEl.find('.' + shapeVertexClass + '[data-index="' + item.index + '"]'), item.type);
+        drawShape.call(_this5, item.coords, _this5.svgEl.find('.' + shapeFaceClass + '[data-index="' + item.index + '"]'), item);
+        drawArea.call(_this5, item.coords, _this5.mapEl.find('area[data-index="' + item.index + '"]'), item.type);
       });
       this.containerWidth = containerWidth;
       this.containerHeight = containerHeight;
@@ -1970,7 +1938,11 @@
        * @returns {external:jQuery}
        */
       copyImageMapsTo: function copyImageMapsTo(targetEl) {
-        this.data('image_maps_inst').copyImageMapsTo(targetEl);
+        $.imageMaps.copyImageMaps({
+          shapes: this.getAllShapes(),
+          width: this.width(),
+          height: this.height()
+        }, targetEl);
         return this;
       },
 
@@ -2107,6 +2079,42 @@
         this.data('image_maps_inst').zoom(percentages);
       }
     });
+    $.imageMaps = {
+      /**
+      * @typedef {PlainObject} module:imageMaps.SourceInfo
+      * @property {module:imageMaps.AllShapeInfo} shapes
+      * @property {Float} width
+      * @property {Float} height
+      */
+
+      /**
+       * @param {module:imageMaps.SourceInfo} sourceInfo
+       * @param {external:jQuery} targetEl
+       * @returns {void}
+       */
+      copyImageMaps: function copyImageMaps(_ref3, targetEl) {
+        var shapes = _ref3.shapes,
+            width = _ref3.width,
+            height = _ref3.height;
+        targetEl.removeAllShapes();
+        $.each(shapes, function (index, item) {
+          targetEl.setShapeStyle(item.style);
+
+          if (item.href) {
+            targetEl.setImageShape(item.href);
+          }
+
+          if (item.text) {
+            targetEl.setTextShape(item.text);
+          }
+
+          var widthRatio = width;
+          var heightRatio = height;
+          var newCoords = getCoordsByRatio(item.coords, item.type, targetEl.width() / widthRatio, targetEl.height() / heightRatio);
+          targetEl.addShape(newCoords, item.url, item.type);
+        });
+      }
+    };
     /**
      * @function external:"jQuery.fn".imageMaps
      * @this external:jQuery
