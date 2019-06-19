@@ -300,35 +300,6 @@ function jqueryImageMaps ($) {
         }
 
         /**
-         *
-         * @param {external:jQuery} targetEl
-         * @returns {void}
-         */
-        copyImageMapsTo (targetEl) {
-            const allShapes = this.getAllShapesInfo();
-            targetEl.removeAllShapes();
-            $.each(allShapes, (index, item) => {
-                targetEl.setShapeStyle(item.style);
-                if (item.href) {
-                    targetEl.setImageShape(item.href);
-                }
-                if (item.text) {
-                    targetEl.setTextShape(item.text);
-                }
-
-                const widthRatio = this.container.width();
-                const heightRatio = this.container.height();
-                const newCoords = getCoordsByRatio(
-                    item.coords,
-                    item.type,
-                    targetEl.width() / widthRatio,
-                    targetEl.height() / heightRatio
-                );
-                targetEl.addShape(newCoords, item.url, item.type);
-            });
-        }
-
-        /**
         * @typedef {PlainObject} module:imageMaps.ShapeInfoOptions
         * @property {Integer} index
         * @property {module:imageMaps.ShapeCoords} coords
@@ -2013,7 +1984,11 @@ function jqueryImageMaps ($) {
          * @returns {external:jQuery}
          */
         copyImageMapsTo (targetEl) {
-            this.data('image_maps_inst').copyImageMapsTo(targetEl);
+            $.imageMaps.copyImageMaps({
+                shapes: this.getAllShapes(),
+                width: this.width(),
+                height: this.height()
+            }, targetEl);
             return this;
         },
 
@@ -2151,6 +2126,42 @@ function jqueryImageMaps ($) {
             this.data('image_maps_inst').zoom(percentages);
         }
     });
+
+    $.imageMaps = {
+        /**
+        * @typedef {PlainObject} module:imageMaps.SourceInfo
+        * @property {module:imageMaps.AllShapeInfo} shapes
+        * @property {Float} width
+        * @property {Float} height
+        */
+        /**
+         * @param {module:imageMaps.SourceInfo} sourceInfo
+         * @param {external:jQuery} targetEl
+         * @returns {void}
+         */
+        copyImageMaps ({shapes, width, height}, targetEl) {
+            targetEl.removeAllShapes();
+            $.each(shapes, (index, item) => {
+                targetEl.setShapeStyle(item.style);
+                if (item.href) {
+                    targetEl.setImageShape(item.href);
+                }
+                if (item.text) {
+                    targetEl.setTextShape(item.text);
+                }
+
+                const widthRatio = width;
+                const heightRatio = height;
+                const newCoords = getCoordsByRatio(
+                    item.coords,
+                    item.type,
+                    targetEl.width() / widthRatio,
+                    targetEl.height() / heightRatio
+                );
+                targetEl.addShape(newCoords, item.url, item.type);
+            });
+        }
+    };
 
     /**
      * @function external:"jQuery.fn".imageMaps

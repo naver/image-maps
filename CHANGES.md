@@ -2,11 +2,17 @@
 
 ## ?
 
-- Compatibility fix: Add `@babel/polyfill` to demo (since
+- Compatibility fix: Add `core-js-bundle` to demo (since
     Babelification may still require some polyfills
     be added for the sake of some older browsers)
 - Fix: Avoid error if `getNaturalImageSize` is supplied a string
 - Fix: For non-IE8, set a `targetAreaEl` for `onClick` call
+- Update: Remove deprecated `@babel/polyfill` in favor of its
+  recommended replacement, `core-js-bundle`
+- Enhancement: Add a `copyImageMaps` static method (on `$.imageMaps`);
+    allows for preserving width/height/shapes at earlier state (e.g.,
+    if rebuilding the same map element with different qualities); also
+    use internally
 - npm: Further devDeps updates (non-major version changes)
 - npm: Update jquery, devDeps
 - npm: Add jquery to `peerDependencies` (since expected to be
