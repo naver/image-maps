@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/no-fn-reference-in-iterator */
+/* eslint-disable unicorn/prefer-switch */
 /*
 The MIT License (MIT)
 
@@ -40,8 +40,7 @@ const areaClass = 'area';
 
 /**
 * @typedef {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|
-* "polyline"|"polygon"}
-* module:imageMaps.ShapeType
+* "polyline"|"polygon"} module:imageMaps.ShapeType
 */
 
 const SHAPE = {
@@ -664,11 +663,9 @@ function jqueryImageMaps ($) {
         if (shapeType === SHAPE.TEXT || shapeType === SHAPE.IMAGE) {
             areaType = SHAPE.RECT;
 
-            if (shapeType === SHAPE.TEXT) {
-                shapeSecondaryOptions = {text: this.shapeText};
-            } else {
-                shapeSecondaryOptions = {href: this.shapeImageUrl};
-            }
+            shapeSecondaryOptions = shapeType === SHAPE.TEXT
+                ? {text: this.shapeText}
+                : {href: this.shapeImageUrl};
         }
 
         createOverlay.call(this, shapeCoords, uid, linkUrl, index);
@@ -1097,8 +1094,8 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {"col"|"row"|Direction|"ew"|"ns"|"nesw"|"nwse"}
-    *   module:imageMaps.CursorType
+    * @typedef {"col"|"row"|Direction|"ew"|
+    * "ns"|"nesw"|"nwse"} module:imageMaps.CursorType
     */
     /**
      * @memberof module:imageMaps.jqueryImageMaps~
@@ -1480,8 +1477,8 @@ function jqueryImageMaps ($) {
 
     /**
     * @typedef {PlainObject} module:imageMaps.MovedCoords
-    * @property {module:imageMaps.Coords} movedCoords,
-    * @property {module:imageMaps.VertexCoords} vertexCoords,
+    * @property {module:imageMaps.Coords} movedCoords
+    * @property {module:imageMaps.VertexCoords} vertexCoords
     * @property {module:imageMaps.ShapeElement} grabEl
     */
 
@@ -1628,10 +1625,6 @@ function jqueryImageMaps ($) {
         const direction = this.vertexEl.attr('data-direction');
         if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             switch (direction) {
-            default:
-                // eslint-disable-next-line no-console
-                console.warn('Unexpected direction', direction);
-                break;
             // 좌상
             case 'nw':
                 movedCoords = getValidCoordsForRect.call(
@@ -1716,13 +1709,13 @@ function jqueryImageMaps ($) {
                     direction
                 );
                 break;
-            }
-        } else if (shapeType === SHAPE.CIRCLE) {
-            switch (direction) {
             default:
                 // eslint-disable-next-line no-console
                 console.warn('Unexpected direction', direction);
                 break;
+            }
+        } else if (shapeType === SHAPE.CIRCLE) {
+            switch (direction) {
             case 'n':
                 movedCoords = [
                     this.shapeCoords[0],
@@ -1754,13 +1747,13 @@ function jqueryImageMaps ($) {
                     getValidCoordsForCircle.call(this, x - this.shapeCoords[0])
                 ];
                 break;
-            }
-        } else if (shapeType === SHAPE.ELLIPSE) {
-            switch (direction) {
             default:
                 // eslint-disable-next-line no-console
                 console.warn('Unexpected direction', direction);
                 break;
+            }
+        } else if (shapeType === SHAPE.ELLIPSE) {
+            switch (direction) {
             case 'n':
                 movedCoords = [
                     this.shapeCoords[0],
@@ -1792,6 +1785,10 @@ function jqueryImageMaps ($) {
                     getValidCoordsForCircle.call(this, x - this.shapeCoords[0]),
                     this.shapeCoords[3]
                 ];
+                break;
+            default:
+                // eslint-disable-next-line no-console
+                console.warn('Unexpected direction', direction);
                 break;
             }
         } else if (shapeType === SHAPE.POLY) {
@@ -1884,11 +1881,9 @@ function jqueryImageMaps ($) {
         } else if (shapeType === SHAPE.CIRCLE) {
             let radiusRatio;
 
-            if (widthRatio >= heightRatio) {
-                radiusRatio = heightRatio;
-            } else {
-                radiusRatio = widthRatio;
-            }
+            radiusRatio = widthRatio >= heightRatio
+                ? heightRatio
+                : widthRatio;
 
             if (widthRatio === 1) {
                 radiusRatio = heightRatio;

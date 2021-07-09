@@ -10,33 +10,19 @@ module.exports = {
         polyfills: [
             'Array.isArray',
             'console',
+            'document.createElementNS',
             'Error',
             'Number.isNaN',
             'Number.parseFloat',
             'Number.parseInt'
         ]
     },
-    overrides: [{
-        files: ['docs/jsdoc-config.js', '.eslintrc.js'],
-        extends: [
-            'plugin:node/recommended-script'
-        ],
-        rules: {
-            strict: 0,
-            'import/unambiguous': 0,
-            'import/no-commonjs': 0
-        }
-    }],
-    extends: ['ash-nazg/sauron', 'plugin:testcafe/recommended'],
-    globals: {
-        Atomics: 'readonly',
-        SharedArrayBuffer: 'readonly'
-    },
+    extends: ['ash-nazg/sauron-overrides', 'plugin:testcafe/recommended'],
     parserOptions: {
-        ecmaVersion: 2018,
-        sourceType: 'module'
+        ecmaVersion: 2018
     },
     rules: {
-        indent: ['error', 4]
+        indent: ['error', 4],
+        'eslint-comments/require-description': 0
     }
 };

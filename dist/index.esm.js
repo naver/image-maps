@@ -37,18 +37,21 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
 }
 
 function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+  if (_i == null) return;
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -92,7 +95,7 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-/* eslint-disable unicorn/no-fn-reference-in-iterator */
+/* eslint-disable unicorn/prefer-switch */
 
 /*
 The MIT License (MIT)
@@ -133,8 +136,7 @@ var shapeVertexClass = '_shape_vertex';
 var areaClass = 'area';
 /**
 * @typedef {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|
-* "polyline"|"polygon"}
-* module:imageMaps.ShapeType
+* "polyline"|"polygon"} module:imageMaps.ShapeType
 */
 
 var SHAPE = {
@@ -353,9 +355,9 @@ function jqueryImageMaps($) {
 
     }, {
       key: "setUrl",
-      value: function setUrl(linkUrl, index) {} // eslint-disable-line class-methods-use-this
-      // Todo
-
+      value: function setUrl(linkUrl, index) {// eslint-disable-line class-methods-use-this
+        // Todo
+      }
       /**
        *
        * @param {string} text
@@ -748,7 +750,7 @@ function jqueryImageMaps($) {
         defaultShapeX = imageSize.width / 2;
         defaultShapeY = imageSize.height / 2;
         shapeCoords = [centerX - defaultShapeX, centerY - defaultShapeY, centerX + defaultShapeX, centerY + defaultShapeY];
-      }
+      } else ;
     } else {
       // 타입별로 정상적으로 좌표값을 받았다면 해당 좌표로 그린다.
       // eslint-disable-next-line no-lonely-if
@@ -774,7 +776,7 @@ function jqueryImageMaps($) {
         }
 
         shapeCoords = $.extend([], defaultShapeOptions.text, coords);
-      }
+      } else ;
     }
 
     var index = this.mapEl.find('.' + shapeFaceClass).length;
@@ -783,16 +785,11 @@ function jqueryImageMaps($) {
 
     if (shapeType === SHAPE.TEXT || shapeType === SHAPE.IMAGE) {
       areaType = SHAPE.RECT;
-
-      if (shapeType === SHAPE.TEXT) {
-        shapeSecondaryOptions = {
-          text: this.shapeText
-        };
-      } else {
-        shapeSecondaryOptions = {
-          href: this.shapeImageUrl
-        };
-      }
+      shapeSecondaryOptions = shapeType === SHAPE.TEXT ? {
+        text: this.shapeText
+      } : {
+        href: this.shapeImageUrl
+      };
     }
 
     createOverlay.call(this, shapeCoords, uid, linkUrl, index);
@@ -1024,7 +1021,7 @@ function jqueryImageMaps($) {
         "class": shapeFaceClass
       });
       shapeEl.text(shapeOptions && shapeOptions.text || this.shapeText);
-    }
+    } else ;
   }
   /**
    * @memberof module:imageMaps.jqueryImageMaps~
@@ -1198,7 +1195,7 @@ function jqueryImageMaps($) {
         y: shapeCoords[1],
         type: 'e'
       }];
-    }
+    } else ;
 
     return vertexArr;
   }
@@ -1225,8 +1222,8 @@ function jqueryImageMaps($) {
     areaEl.attr('coords', shapeCoords.join(','));
   }
   /**
-  * @typedef {"col"|"row"|Direction|"ew"|"ns"|"nesw"|"nwse"}
-  *   module:imageMaps.CursorType
+  * @typedef {"col"|"row"|Direction|"ew"|
+  * "ns"|"nesw"|"nwse"} module:imageMaps.CursorType
   */
 
   /**
@@ -1552,8 +1549,8 @@ function jqueryImageMaps($) {
   }
   /**
   * @typedef {PlainObject} module:imageMaps.MovedCoords
-  * @property {module:imageMaps.Coords} movedCoords,
-  * @property {module:imageMaps.VertexCoords} vertexCoords,
+  * @property {module:imageMaps.Coords} movedCoords
+  * @property {module:imageMaps.VertexCoords} vertexCoords
   * @property {module:imageMaps.ShapeElement} grabEl
   */
 
@@ -1592,7 +1589,7 @@ function jqueryImageMaps($) {
       vertexCoords = calculateVertexCoords(SHAPE.ELLIPSE, movedCoords);
     } else if (shapeType === SHAPE.TEXT) {
       movedCoords = [x, y];
-    }
+    } else ;
 
     return {
       movedCoords: movedCoords,
@@ -1630,7 +1627,7 @@ function jqueryImageMaps($) {
       updatedCoords = [Number.parseInt(shapeEl.attr('cx')), Number.parseInt(shapeEl.attr('cy')), Number.parseInt(shapeEl.attr('rx')), Number.parseInt(shapeEl.attr('ry'))];
     } else if (shapeType === SHAPE.TEXT) {
       updatedCoords = [Number.parseInt(shapeEl.attr('x')), Number.parseInt(shapeEl.attr('y'))];
-    }
+    } else ;
 
     return updatedCoords;
   }
@@ -1677,12 +1674,7 @@ function jqueryImageMaps($) {
 
     if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
       switch (direction) {
-        default:
-          // eslint-disable-next-line no-console
-          console.warn('Unexpected direction', direction);
-          break;
         // 좌상
-
         case 'nw':
           movedCoords = getValidCoordsForRect.call(this, [x, y, this.shapeCoords[2], this.shapeCoords[3]], direction);
           break;
@@ -1721,14 +1713,14 @@ function jqueryImageMaps($) {
         case 'e':
           movedCoords = getValidCoordsForRect.call(this, [this.shapeCoords[0], this.shapeCoords[1], x, this.shapeCoords[3]], direction);
           break;
-      }
-    } else if (shapeType === SHAPE.CIRCLE) {
-      switch (direction) {
+
         default:
           // eslint-disable-next-line no-console
           console.warn('Unexpected direction', direction);
           break;
-
+      }
+    } else if (shapeType === SHAPE.CIRCLE) {
+      switch (direction) {
         case 'n':
           movedCoords = [this.shapeCoords[0], this.shapeCoords[1], getValidCoordsForCircle.call(this, this.shapeCoords[1] - y)];
           break;
@@ -1744,14 +1736,14 @@ function jqueryImageMaps($) {
         case 'e':
           movedCoords = [this.shapeCoords[0], this.shapeCoords[1], getValidCoordsForCircle.call(this, x - this.shapeCoords[0])];
           break;
-      }
-    } else if (shapeType === SHAPE.ELLIPSE) {
-      switch (direction) {
+
         default:
           // eslint-disable-next-line no-console
           console.warn('Unexpected direction', direction);
           break;
-
+      }
+    } else if (shapeType === SHAPE.ELLIPSE) {
+      switch (direction) {
         case 'n':
           movedCoords = [this.shapeCoords[0], this.shapeCoords[1], this.shapeCoords[2], getValidCoordsForCircle.call(this, this.shapeCoords[1] - y)];
           break;
@@ -1767,8 +1759,13 @@ function jqueryImageMaps($) {
         case 'e':
           movedCoords = [this.shapeCoords[0], this.shapeCoords[1], getValidCoordsForCircle.call(this, x - this.shapeCoords[0]), this.shapeCoords[3]];
           break;
+
+        default:
+          // eslint-disable-next-line no-console
+          console.warn('Unexpected direction', direction);
+          break;
       }
-    }
+    } else ;
 
     vertexCoords = calculateVertexCoords(shapeType, movedCoords);
     return {
@@ -1856,12 +1853,7 @@ function jqueryImageMaps($) {
       adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * widthRatio, coords[3] * heightRatio];
     } else if (shapeType === SHAPE.CIRCLE) {
       var radiusRatio;
-
-      if (widthRatio >= heightRatio) {
-        radiusRatio = heightRatio;
-      } else {
-        radiusRatio = widthRatio;
-      }
+      radiusRatio = widthRatio >= heightRatio ? heightRatio : widthRatio;
 
       if (widthRatio === 1) {
         radiusRatio = heightRatio;
@@ -1874,7 +1866,7 @@ function jqueryImageMaps($) {
       adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * radiusRatio];
     } else if (shapeType === SHAPE.TEXT) {
       adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * widthRatio];
-    }
+    } else ;
 
     return adjustCoords;
   }
