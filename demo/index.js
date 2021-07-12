@@ -85,7 +85,7 @@ $('#maps_zoom').on('click', function (e) {
     const zoomInput = $('#zoom');
     const val = Number(zoomInput.val() || 100);
 
-    if (typeof val !== 'number' || isNaN(val) || val <= 0) {
+    if (typeof val !== 'number' || Number.isNaN(val) || val <= 0) {
         alert( // eslint-disable-line no-alert
             'You must enter a number and one greater than 0.'
         );

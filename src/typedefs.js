@@ -14,11 +14,13 @@
  * @typedef {number} Float
  */
 /**
-* @typedef {String} Url
+* @typedef {string} Url
 */
+/* eslint-disable jsdoc/check-types, jsdoc/require-property */
 /**
  * @typedef {object} PlainObject
  */
 /**
 * @typedef {Array} GenericArray
 */
+/* eslint-enable jsdoc/check-types, jsdoc/require-property */

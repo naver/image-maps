@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.jqueryImageMaps = factory());
-}(this, function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.jqueryImageMaps = factory());
+}(this, (function () { 'use strict';
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -27,19 +27,15 @@
   }
 
   function _slicedToArray(arr, i) {
-    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
   }
 
   function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
   }
 
   function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    }
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
   }
 
   function _arrayWithHoles(arr) {
@@ -47,17 +43,21 @@
   }
 
   function _iterableToArray(iter) {
-    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
   }
 
   function _iterableToArrayLimit(arr, i) {
+    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+    if (_i == null) return;
     var _arr = [];
     var _n = true;
     var _d = false;
-    var _e = undefined;
+
+    var _s, _e;
 
     try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
         _arr.push(_s.value);
 
         if (i && _arr.length === i) break;
@@ -76,49 +76,73 @@
     return _arr;
   }
 
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+
   function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance");
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
   function _nonIterableRest() {
-    throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
-  // The MIT License (MIT)
-  // Copyright (c) 2016 NAVER Corp.
-  // Permission is hereby granted, free of charge, to any person obtaining a copy
-  // of this software and associated documentation files (the "Software"), to deal
-  // in the Software without restriction, including without limitation the rights
-  // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  // copies of the Software, and to permit persons to whom the Software is
-  // furnished to do so, subject to the following conditions:
-  // The above copyright notice and this permission notice shall be included
-  // in all copies or substantial portions of the Software.
-  // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  // SOFTWARE.
+  /* eslint-disable unicorn/prefer-switch */
+
+  /*
+  The MIT License (MIT)
+
+  Copyright (c) 2016 NAVER Corp.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+  */
 
   /**
-  * imageMaps 1.1.0
+  * ImageMaps 1.1.0
   * jquery plugin which can be partially linked to the image
   *
   * https://github.com/naver/image-maps
   * demo - https://naver.github.io/image-maps/
   *
-  * Released on: July 6, 2016
+  * Released on: July 6, 2016.
   * @module imageMaps
   */
   var shapeFaceClass = '_shape_face';
   var shapeVertexClass = '_shape_vertex';
   var areaClass = 'area';
   /**
-  * @typedef
-  * {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|"polyline"|"polygon"}
-  * module:imageMaps.ShapeType
+  * @typedef {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|
+  * "polyline"|"polygon"} module:imageMaps.ShapeType
   */
 
   var SHAPE = {
@@ -133,7 +157,46 @@
   };
   /**
    * @see https://api.jquery.com/css/
-   * @typedef {PlainObject} module:imageMaps.ShapeStyles
+   * @typedef {PlainObject<string,string>} module:imageMaps.ShapeStyles
+  */
+
+  /**
+  * @callback OnClick
+  * @param {Event} e
+  * @param {string} targetAreaHref
+  * @returns {void}
+  */
+
+  /**
+   * @callback MouseDown
+   * @param {Event} e
+   * @param {module:imageMaps.ShapeType} shapeType
+   * @param {module:imageMaps.Coords} coords
+   * @returns {void}
+   */
+
+  /**
+  * @callback MouseMove
+  * @param {Event} e
+  * @param {module:imageMaps.ShapeType} shapeType
+  * @param {module:imageMaps.MovedCoords} movedCoords
+  * @returns {void}
+  */
+
+  /**
+  * @callback MouseUp
+  * @param {Event} e
+  * @param {module:imageMaps.ShapeType} shapeType
+  * @param {module:imageMaps.ShapeCoords} updatedCoords
+  * @returns {void}
+  */
+
+  /**
+  * @callback Select
+  * @param {Event} e
+  * @param {module:imageMaps.ShapeInfoOptions|
+  *   module:imageMaps.ShapeSecondaryOptions} shapeInfo
+  * @returns {void}
   */
 
   /**
@@ -144,11 +207,11 @@
   * @property {module:imageMaps.ShapeStyles} [shapeStyle] Defaults to
   *   `{fill: '#ffffff', 'fill-opacity': 0.2,
   *     stroke: '#ffffff', 'stroke-width': 3}`
-  * @property {function} [onClick=function () {}]
-  * @property {function} [onMouseDown=function () {}]
-  * @property {function} [onMouseMove=function () {}]
-  * @property {function} [onMouseUp=function () {}]
-  * @property {function} [onSelect=function () {}]
+  * @property {OnClick} [onClick=function () {}]
+  * @property {MouseDown} [onMouseDown=function () {}]
+  * @property {MouseMove} [onMouseMove=function () {}]
+  * @property {MouseUp} [onMouseUp=function () {}]
+  * @property {Select} [onSelect=function () {}]
   */
 
   /**
@@ -203,9 +266,7 @@
     /**
      * @memberof module:imageMaps.jqueryImageMaps~
      */
-    var ImageMaps =
-    /*#__PURE__*/
-    function () {
+    var ImageMaps = /*#__PURE__*/function () {
       /**
        *
        * @param {external:jQuery} container
@@ -263,7 +324,7 @@
         value: function createMaps(coords, linkUrl) {
           var imageWidth = this.container.width();
 
-          if (isNaN(imageWidth) || !imageWidth) {
+          if (Number.isNaN(imageWidth) || !imageWidth) {
             this.container.one('load', $.proxy(_createMaps, this, coords, linkUrl));
           } else {
             _createMaps.call(this, coords, linkUrl);
@@ -300,9 +361,9 @@
 
       }, {
         key: "setUrl",
-        value: function setUrl(linkUrl, index) {} // eslint-disable-line class-methods-use-this
-        // Todo
-
+        value: function setUrl(linkUrl, index) {// eslint-disable-line class-methods-use-this
+          // Todo
+        }
         /**
          *
          * @param {string} text
@@ -583,9 +644,16 @@
           this.vertexEls = elements;
         }
         /**
+        * @callback Handler
+        * @param {Event} e
+        * @param {...any} extraParameters
+        * @returns {boolean}
+        */
+
+        /**
         * @typedef {PlainObject} module:imageMaps.TypeHandler
         * @property {string} type
-        * @property {function} handler
+        * @property {Handler} handler
         */
 
         /**
@@ -688,7 +756,7 @@
           defaultShapeX = imageSize.width / 2;
           defaultShapeY = imageSize.height / 2;
           shapeCoords = [centerX - defaultShapeX, centerY - defaultShapeY, centerX + defaultShapeX, centerY + defaultShapeY];
-        }
+        } else ;
       } else {
         // 타입별로 정상적으로 좌표값을 받았다면 해당 좌표로 그린다.
         // eslint-disable-next-line no-lonely-if
@@ -714,7 +782,7 @@
           }
 
           shapeCoords = $.extend([], defaultShapeOptions.text, coords);
-        }
+        } else ;
       }
 
       var index = this.mapEl.find('.' + shapeFaceClass).length;
@@ -723,16 +791,11 @@
 
       if (shapeType === SHAPE.TEXT || shapeType === SHAPE.IMAGE) {
         areaType = SHAPE.RECT;
-
-        if (shapeType === SHAPE.TEXT) {
-          shapeSecondaryOptions = {
-            text: this.shapeText
-          };
-        } else {
-          shapeSecondaryOptions = {
-            href: this.shapeImageUrl
-          };
-        }
+        shapeSecondaryOptions = shapeType === SHAPE.TEXT ? {
+          text: this.shapeText
+        } : {
+          href: this.shapeImageUrl
+        };
       }
 
       createOverlay.call(this, shapeCoords, uid, linkUrl, index);
@@ -964,7 +1027,7 @@
           "class": shapeFaceClass
         });
         shapeEl.text(shapeOptions && shapeOptions.text || this.shapeText);
-      }
+      } else ;
     }
     /**
      * @memberof module:imageMaps.jqueryImageMaps~
@@ -977,9 +1040,9 @@
       var shapeEl = this.shapeEl;
       var shapeSize = shapeEl.get(0).getBBox();
       var centerX = shapeSize.width / 2;
-      var centerY = parseFloat(shapeEl.attr('font-size')) * FONT_SIZE_RATIO / 2;
-      var bottomRightX = parseInt(shapeEl.attr('x'));
-      var bottomRightY = parseInt(shapeEl.attr('y'));
+      var centerY = Number.parseFloat(shapeEl.attr('font-size')) * FONT_SIZE_RATIO / 2;
+      var bottomRightX = Number.parseInt(shapeEl.attr('x'));
+      var bottomRightY = Number.parseInt(shapeEl.attr('y'));
       var resultX = bottomRightX - centerX;
       var resultY = bottomRightY + centerY;
       this.updateShapeInfo(shapeEl.data('index'), {
@@ -991,8 +1054,8 @@
       });
     }
     /**
-     * `SVGRect` element for each vertex coordinate
-    * @typedef {SVGRect[]} module:imageMaps.VertexElements One
+     * `SVGRect` element for each vertex coordinate.
+     * @typedef {SVGRect[]} module:imageMaps.VertexElements One
     */
 
     /**
@@ -1016,7 +1079,7 @@
         });
         return vertexEl;
       });
-      drawVertex(vertexCoords, vertexTemp, shapeType);
+      drawVertex(vertexCoords, vertexTemp);
       return vertexTemp;
     }
     /**
@@ -1138,7 +1201,7 @@
           y: shapeCoords[1],
           type: 'e'
         }];
-      }
+      } else ;
 
       return vertexArr;
     }
@@ -1165,8 +1228,8 @@
       areaEl.attr('coords', shapeCoords.join(','));
     }
     /**
-    * @typedef {"col"|"row"|Direction|"ew"|"ns"|"nesw"|"nwse"}
-    *   module:imageMaps.CursorType
+    * @typedef {"col"|"row"|Direction|"ew"|
+    * "ns"|"nesw"|"nwse"} module:imageMaps.CursorType
     */
 
     /**
@@ -1250,31 +1313,31 @@
       var shapeType = shapeEl.get(0).tagName.toLowerCase();
 
       if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
-        var targetX = parseInt(shapeEl.attr('x'));
-        var targetY = parseInt(shapeEl.attr('y'));
-        coords = [targetX, targetY, targetX + parseInt(shapeEl.attr('width')), targetY + parseInt(shapeEl.attr('height'))];
+        var targetX = Number.parseInt(shapeEl.attr('x'));
+        var targetY = Number.parseInt(shapeEl.attr('y'));
+        coords = [targetX, targetY, targetX + Number.parseInt(shapeEl.attr('width')), targetY + Number.parseInt(shapeEl.attr('height'))];
 
         if (shapeType === SHAPE.IMAGE) {
           this.setImageShape(shapeEl.attr('href'));
         }
       } else if (shapeType === SHAPE.CIRCLE) {
-        var _targetX = parseInt(shapeEl.attr('cx'));
+        var _targetX = Number.parseInt(shapeEl.attr('cx'));
 
-        var _targetY = parseInt(shapeEl.attr('cy'));
+        var _targetY = Number.parseInt(shapeEl.attr('cy'));
 
-        coords = [_targetX, _targetY, parseInt(shapeEl.attr('r'))];
+        coords = [_targetX, _targetY, Number.parseInt(shapeEl.attr('r'))];
       } else if (shapeType === SHAPE.ELLIPSE) {
-        var _targetX2 = parseInt(shapeEl.attr('cx'));
+        var _targetX2 = Number.parseInt(shapeEl.attr('cx'));
 
-        var _targetY2 = parseInt(shapeEl.attr('cy'));
+        var _targetY2 = Number.parseInt(shapeEl.attr('cy'));
 
-        coords = [_targetX2, _targetY2, parseInt(shapeEl.attr('rx')), parseInt(shapeEl.attr('ry'))];
+        coords = [_targetX2, _targetY2, Number.parseInt(shapeEl.attr('rx')), Number.parseInt(shapeEl.attr('ry'))];
       } else if (shapeType === SHAPE.TEXT) {
-        var _targetX3 = parseFloat(shapeEl.attr('x'));
+        var _targetX3 = Number.parseFloat(shapeEl.attr('x'));
 
-        var _targetY3 = parseFloat(shapeEl.attr('y'));
+        var _targetY3 = Number.parseFloat(shapeEl.attr('y'));
 
-        var fontSize = parseFloat(shapeEl.attr('font-size'));
+        var fontSize = Number.parseFloat(shapeEl.attr('font-size'));
         coords = [_targetX3, _targetY3, fontSize];
         this.shapeText = shapeEl.text();
       } else if (shapeType === SHAPE.POLYGON) {
@@ -1384,7 +1447,7 @@
           drawVertex(coords.vertexCoords, this.vertexEls, this.shapeType);
         }
 
-        var index = parseInt(coords.grabEl.attr('data-index'));
+        var index = Number.parseInt(coords.grabEl.attr('data-index'));
         drawShape.call(this, coords.movedCoords, this.svgEl.find('.' + shapeFaceClass + '[data-index="' + index + '"]'));
         drawArea.call(this, coords.movedCoords, this.mapEl.find('area[data-index="' + index + '"]')); // svg 내 엘리먼트들은 z-index 영향을 받지 않고 document 순서에 영향을 받는다.
         // 그래서 drag 시 다른 요소들보다 최상위에 두려면 엘리먼트 순서를 부모의 가장 하위에 두어야 한다.
@@ -1492,8 +1555,8 @@
     }
     /**
     * @typedef {PlainObject} module:imageMaps.MovedCoords
-    * @property {module:imageMaps.Coords} movedCoords,
-    * @property {module:imageMaps.VertexCoords} vertexCoords,
+    * @property {module:imageMaps.Coords} movedCoords
+    * @property {module:imageMaps.VertexCoords} vertexCoords
     * @property {module:imageMaps.ShapeElement} grabEl
     */
 
@@ -1518,21 +1581,21 @@
       var shapeType = this.shapeType;
 
       if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
-        var width = parseInt(shapeEl.attr('width'));
-        var height = parseInt(shapeEl.attr('height'));
+        var width = Number.parseInt(shapeEl.attr('width'));
+        var height = Number.parseInt(shapeEl.attr('height'));
         var movedBottomRightX = x + width;
         var movedBottomRightY = y + height;
         movedCoords = [x, y, movedBottomRightX, movedBottomRightY];
         vertexCoords = calculateVertexCoords(SHAPE.RECT, movedCoords);
       } else if (shapeType === SHAPE.CIRCLE) {
-        movedCoords = [x, y, parseInt(shapeEl.attr('r'))];
+        movedCoords = [x, y, Number.parseInt(shapeEl.attr('r'))];
         vertexCoords = calculateVertexCoords(SHAPE.CIRCLE, movedCoords);
       } else if (shapeType === SHAPE.ELLIPSE) {
-        movedCoords = [x, y, parseInt(shapeEl.attr('rx')), parseInt(shapeEl.attr('ry'))];
+        movedCoords = [x, y, Number.parseInt(shapeEl.attr('rx')), Number.parseInt(shapeEl.attr('ry'))];
         vertexCoords = calculateVertexCoords(SHAPE.ELLIPSE, movedCoords);
       } else if (shapeType === SHAPE.TEXT) {
         movedCoords = [x, y];
-      }
+      } else ;
 
       return {
         movedCoords: movedCoords,
@@ -1561,16 +1624,16 @@
       var updatedCoords = [];
 
       if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
-        var x = parseInt(shapeEl.attr('x'));
-        var y = parseInt(shapeEl.attr('y'));
-        updatedCoords = [x, y, x + parseInt(shapeEl.attr('width')), y + parseInt(shapeEl.attr('height'))];
+        var x = Number.parseInt(shapeEl.attr('x'));
+        var y = Number.parseInt(shapeEl.attr('y'));
+        updatedCoords = [x, y, x + Number.parseInt(shapeEl.attr('width')), y + Number.parseInt(shapeEl.attr('height'))];
       } else if (shapeType === SHAPE.CIRCLE) {
-        updatedCoords = [parseInt(shapeEl.attr('cx')), parseInt(shapeEl.attr('cy')), parseInt(shapeEl.attr('r'))];
+        updatedCoords = [Number.parseInt(shapeEl.attr('cx')), Number.parseInt(shapeEl.attr('cy')), Number.parseInt(shapeEl.attr('r'))];
       } else if (shapeType === SHAPE.ELLIPSE) {
-        updatedCoords = [parseInt(shapeEl.attr('cx')), parseInt(shapeEl.attr('cy')), parseInt(shapeEl.attr('rx')), parseInt(shapeEl.attr('ry'))];
+        updatedCoords = [Number.parseInt(shapeEl.attr('cx')), Number.parseInt(shapeEl.attr('cy')), Number.parseInt(shapeEl.attr('rx')), Number.parseInt(shapeEl.attr('ry'))];
       } else if (shapeType === SHAPE.TEXT) {
-        updatedCoords = [parseInt(shapeEl.attr('x')), parseInt(shapeEl.attr('y'))];
-      }
+        updatedCoords = [Number.parseInt(shapeEl.attr('x')), Number.parseInt(shapeEl.attr('y'))];
+      } else ;
 
       return updatedCoords;
     }
@@ -1617,12 +1680,7 @@
 
       if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
         switch (direction) {
-          default:
-            // eslint-disable-next-line no-console
-            console.warn('Unexpected direction', direction);
-            break;
           // 좌상
-
           case 'nw':
             movedCoords = getValidCoordsForRect.call(this, [x, y, this.shapeCoords[2], this.shapeCoords[3]], direction);
             break;
@@ -1661,14 +1719,14 @@
           case 'e':
             movedCoords = getValidCoordsForRect.call(this, [this.shapeCoords[0], this.shapeCoords[1], x, this.shapeCoords[3]], direction);
             break;
-        }
-      } else if (shapeType === SHAPE.CIRCLE) {
-        switch (direction) {
+
           default:
             // eslint-disable-next-line no-console
             console.warn('Unexpected direction', direction);
             break;
-
+        }
+      } else if (shapeType === SHAPE.CIRCLE) {
+        switch (direction) {
           case 'n':
             movedCoords = [this.shapeCoords[0], this.shapeCoords[1], getValidCoordsForCircle.call(this, this.shapeCoords[1] - y)];
             break;
@@ -1684,14 +1742,14 @@
           case 'e':
             movedCoords = [this.shapeCoords[0], this.shapeCoords[1], getValidCoordsForCircle.call(this, x - this.shapeCoords[0])];
             break;
-        }
-      } else if (shapeType === SHAPE.ELLIPSE) {
-        switch (direction) {
+
           default:
             // eslint-disable-next-line no-console
             console.warn('Unexpected direction', direction);
             break;
-
+        }
+      } else if (shapeType === SHAPE.ELLIPSE) {
+        switch (direction) {
           case 'n':
             movedCoords = [this.shapeCoords[0], this.shapeCoords[1], this.shapeCoords[2], getValidCoordsForCircle.call(this, this.shapeCoords[1] - y)];
             break;
@@ -1707,8 +1765,13 @@
           case 'e':
             movedCoords = [this.shapeCoords[0], this.shapeCoords[1], getValidCoordsForCircle.call(this, x - this.shapeCoords[0]), this.shapeCoords[3]];
             break;
+
+          default:
+            // eslint-disable-next-line no-console
+            console.warn('Unexpected direction', direction);
+            break;
         }
-      }
+      } else ;
 
       vertexCoords = calculateVertexCoords(shapeType, movedCoords);
       return {
@@ -1796,12 +1859,7 @@
         adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * widthRatio, coords[3] * heightRatio];
       } else if (shapeType === SHAPE.CIRCLE) {
         var radiusRatio;
-
-        if (widthRatio >= heightRatio) {
-          radiusRatio = heightRatio;
-        } else {
-          radiusRatio = widthRatio;
-        }
+        radiusRatio = widthRatio >= heightRatio ? heightRatio : widthRatio;
 
         if (widthRatio === 1) {
           radiusRatio = heightRatio;
@@ -1814,7 +1872,7 @@
         adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * radiusRatio];
       } else if (shapeType === SHAPE.TEXT) {
         adjustCoords = [coords[0] * widthRatio, coords[1] * heightRatio, coords[2] * widthRatio];
-      }
+      } else ;
 
       return adjustCoords;
     }
@@ -1835,11 +1893,11 @@
 
 
     function convertTextToRectCoords(shapeEl) {
-      var bottomLeftX = parseFloat(shapeEl.attr('x'));
-      var bottomLeftY = parseFloat(shapeEl.attr('y'));
+      var bottomLeftX = Number.parseFloat(shapeEl.attr('x'));
+      var bottomLeftY = Number.parseFloat(shapeEl.attr('y'));
       var shapeSize = shapeEl.get(0).getBBox();
       var width = shapeSize.width;
-      var height = parseFloat(shapeEl.attr('font-size')) * FONT_SIZE_RATIO / 2;
+      var height = Number.parseFloat(shapeEl.attr('font-size')) * FONT_SIZE_RATIO / 2;
       return [bottomLeftX, bottomLeftY - height, bottomLeftX + width, bottomLeftY];
     }
     /**
@@ -1856,7 +1914,7 @@
       }
 
       return _toConsumableArray(coords).map(function (ch) {
-        return parseFloat(ch);
+        return Number.parseFloat(ch);
       });
     } //   UTIL FUNCTIONS
 
@@ -1876,7 +1934,7 @@
        * @returns {string}
        */
       function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).slice(1);
       }
 
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
@@ -1974,11 +2032,12 @@
        */
       removeAllShapes: function removeAllShapes() {
         this.data('image_maps_inst').removeAllShapes();
+        return this;
       },
 
       /**
        * @function external:"jQuery.fn".destroy
-       * @returns {external:jQuery}
+       * @returns {void}
        */
       destroy: function destroy() {
         var imageMapsObj = this.data('image_maps_inst');
@@ -2146,4 +2205,4 @@
 
   return jqueryImageMaps;
 
-}));
+})));

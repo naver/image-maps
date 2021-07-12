@@ -1,4 +1,6 @@
 /* eslint-env node */
+'use strict';
+
 module.exports = {
     env: {
         browser: true,
@@ -6,30 +8,21 @@ module.exports = {
     },
     settings: {
         polyfills: [
-          "Array.isArray",
-          "console",
-          "Error"
+            'Array.isArray',
+            'console',
+            'document.createElementNS',
+            'Error',
+            'Number.isNaN',
+            'Number.parseFloat',
+            'Number.parseInt'
         ]
     },
-    overrides: {
-        files: ['docs/jsdoc-config.js'],
-        rules: {
-          strict: 0,
-          'import/unambiguous': 0,
-          'import/no-commonjs': 0
-        }
-    },
-    extends: ['ash-nazg/sauron', 'plugin:testcafe/recommended'],
-    globals: {
-        Atomics: 'readonly',
-        SharedArrayBuffer: 'readonly'
-    },
+    extends: ['ash-nazg/sauron-overrides', 'plugin:testcafe/recommended'],
     parserOptions: {
-        ecmaVersion: 2018,
-        sourceType: 'module'
+        ecmaVersion: 2018
     },
     rules: {
         indent: ['error', 4],
-        'valid-jsdoc': 0
+        'eslint-comments/require-description': 0
     }
 };

@@ -1,33 +1,36 @@
-// The MIT License (MIT)
+/* eslint-disable unicorn/prefer-switch */
+/*
+The MIT License (MIT)
 
-// Copyright (c) 2016 NAVER Corp.
+Copyright (c) 2016 NAVER Corp.
 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 /**
-* imageMaps 1.1.0
+* ImageMaps 1.1.0
 * jquery plugin which can be partially linked to the image
 *
 * https://github.com/naver/image-maps
 * demo - https://naver.github.io/image-maps/
 *
-* Released on: July 6, 2016
+* Released on: July 6, 2016.
 * @module imageMaps
 */
 
@@ -36,9 +39,8 @@ const shapeVertexClass = '_shape_vertex';
 const areaClass = 'area';
 
 /**
-* @typedef
-* {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|"polyline"|"polygon"}
-* module:imageMaps.ShapeType
+* @typedef {"rect"|"circle"|"ellipse"|"text"|"image"|"poly"|
+* "polyline"|"polygon"} module:imageMaps.ShapeType
 */
 
 const SHAPE = {
@@ -54,7 +56,46 @@ const SHAPE = {
 
 /**
  * @see https://api.jquery.com/css/
- * @typedef {PlainObject} module:imageMaps.ShapeStyles
+ * @typedef {PlainObject<string,string>} module:imageMaps.ShapeStyles
+*/
+
+/**
+* @callback OnClick
+* @param {Event} e
+* @param {string} targetAreaHref
+* @returns {void}
+*/
+
+/**
+ * @callback MouseDown
+ * @param {Event} e
+ * @param {module:imageMaps.ShapeType} shapeType
+ * @param {module:imageMaps.Coords} coords
+ * @returns {void}
+ */
+
+/**
+* @callback MouseMove
+* @param {Event} e
+* @param {module:imageMaps.ShapeType} shapeType
+* @param {module:imageMaps.MovedCoords} movedCoords
+* @returns {void}
+*/
+
+/**
+* @callback MouseUp
+* @param {Event} e
+* @param {module:imageMaps.ShapeType} shapeType
+* @param {module:imageMaps.ShapeCoords} updatedCoords
+* @returns {void}
+*/
+
+/**
+* @callback Select
+* @param {Event} e
+* @param {module:imageMaps.ShapeInfoOptions|
+*   module:imageMaps.ShapeSecondaryOptions} shapeInfo
+* @returns {void}
 */
 
 /**
@@ -65,11 +106,11 @@ const SHAPE = {
 * @property {module:imageMaps.ShapeStyles} [shapeStyle] Defaults to
 *   `{fill: '#ffffff', 'fill-opacity': 0.2,
 *     stroke: '#ffffff', 'stroke-width': 3}`
-* @property {function} [onClick=function () {}]
-* @property {function} [onMouseDown=function () {}]
-* @property {function} [onMouseMove=function () {}]
-* @property {function} [onMouseUp=function () {}]
-* @property {function} [onSelect=function () {}]
+* @property {OnClick} [onClick=function () {}]
+* @property {MouseDown} [onMouseDown=function () {}]
+* @property {MouseMove} [onMouseMove=function () {}]
+* @property {MouseUp} [onMouseUp=function () {}]
+* @property {Select} [onSelect=function () {}]
 */
 
 /**
@@ -170,7 +211,7 @@ function jqueryImageMaps ($) {
         createMaps (coords, linkUrl) {
             const imageWidth = this.container.width();
 
-            if (isNaN(imageWidth) || !imageWidth) {
+            if (Number.isNaN(imageWidth) || !imageWidth) {
                 this.container.one(
                     'load',
                     $.proxy(createMaps, this, coords, linkUrl)
@@ -458,10 +499,18 @@ function jqueryImageMaps ($) {
         }
 
         /**
+        * @callback Handler
+        * @param {Event} e
+        * @param {...any} extraParameters
+        * @returns {boolean}
+        */
+
+        /**
         * @typedef {PlainObject} module:imageMaps.TypeHandler
         * @property {string} type
-        * @property {function} handler
+        * @property {Handler} handler
         */
+
         /**
          * ImageMaps: 이미지맵 이벤트 할당.
          * @param {Node|external:jQuery} element
@@ -614,11 +663,9 @@ function jqueryImageMaps ($) {
         if (shapeType === SHAPE.TEXT || shapeType === SHAPE.IMAGE) {
             areaType = SHAPE.RECT;
 
-            if (shapeType === SHAPE.TEXT) {
-                shapeSecondaryOptions = {text: this.shapeText};
-            } else {
-                shapeSecondaryOptions = {href: this.shapeImageUrl};
-            }
+            shapeSecondaryOptions = shapeType === SHAPE.TEXT
+                ? {text: this.shapeText}
+                : {href: this.shapeImageUrl};
         }
 
         createOverlay.call(this, shapeCoords, uid, linkUrl, index);
@@ -873,11 +920,11 @@ function jqueryImageMaps ($) {
         const {shapeEl} = this;
         const shapeSize = shapeEl.get(0).getBBox();
         const centerX = shapeSize.width / 2;
-        const centerY = parseFloat(
+        const centerY = Number.parseFloat(
             shapeEl.attr('font-size')
         ) * FONT_SIZE_RATIO / 2;
-        const bottomRightX = parseInt(shapeEl.attr('x'));
-        const bottomRightY = parseInt(shapeEl.attr('y'));
+        const bottomRightX = Number.parseInt(shapeEl.attr('x'));
+        const bottomRightY = Number.parseInt(shapeEl.attr('y'));
         const resultX = bottomRightX - centerX;
         const resultY = bottomRightY + centerY;
 
@@ -892,8 +939,8 @@ function jqueryImageMaps ($) {
     }
 
     /**
-     * `SVGRect` element for each vertex coordinate
-    * @typedef {SVGRect[]} module:imageMaps.VertexElements One
+     * `SVGRect` element for each vertex coordinate.
+     * @typedef {SVGRect[]} module:imageMaps.VertexElements One
     */
 
     /**
@@ -1047,8 +1094,8 @@ function jqueryImageMaps ($) {
     }
 
     /**
-    * @typedef {"col"|"row"|Direction|"ew"|"ns"|"nesw"|"nwse"}
-    *   module:imageMaps.CursorType
+    * @typedef {"col"|"row"|Direction|"ew"|
+    * "ns"|"nesw"|"nwse"} module:imageMaps.CursorType
     */
     /**
      * @memberof module:imageMaps.jqueryImageMaps~
@@ -1134,33 +1181,33 @@ function jqueryImageMaps ($) {
         let shapeType = shapeEl.get(0).tagName.toLowerCase();
 
         if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
-            const targetX = parseInt(shapeEl.attr('x'));
-            const targetY = parseInt(shapeEl.attr('y'));
+            const targetX = Number.parseInt(shapeEl.attr('x'));
+            const targetY = Number.parseInt(shapeEl.attr('y'));
             coords = [
                 targetX,
                 targetY,
-                targetX + parseInt(shapeEl.attr('width')),
-                targetY + parseInt(shapeEl.attr('height'))
+                targetX + Number.parseInt(shapeEl.attr('width')),
+                targetY + Number.parseInt(shapeEl.attr('height'))
             ];
             if (shapeType === SHAPE.IMAGE) {
                 this.setImageShape(shapeEl.attr('href'));
             }
         } else if (shapeType === SHAPE.CIRCLE) {
-            const targetX = parseInt(shapeEl.attr('cx'));
-            const targetY = parseInt(shapeEl.attr('cy'));
-            coords = [targetX, targetY, parseInt(shapeEl.attr('r'))];
+            const targetX = Number.parseInt(shapeEl.attr('cx'));
+            const targetY = Number.parseInt(shapeEl.attr('cy'));
+            coords = [targetX, targetY, Number.parseInt(shapeEl.attr('r'))];
         } else if (shapeType === SHAPE.ELLIPSE) {
-            const targetX = parseInt(shapeEl.attr('cx'));
-            const targetY = parseInt(shapeEl.attr('cy'));
+            const targetX = Number.parseInt(shapeEl.attr('cx'));
+            const targetY = Number.parseInt(shapeEl.attr('cy'));
             coords = [
                 targetX, targetY,
-                parseInt(shapeEl.attr('rx')),
-                parseInt(shapeEl.attr('ry'))
+                Number.parseInt(shapeEl.attr('rx')),
+                Number.parseInt(shapeEl.attr('ry'))
             ];
         } else if (shapeType === SHAPE.TEXT) {
-            const targetX = parseFloat(shapeEl.attr('x'));
-            const targetY = parseFloat(shapeEl.attr('y'));
-            const fontSize = parseFloat(shapeEl.attr('font-size'));
+            const targetX = Number.parseFloat(shapeEl.attr('x'));
+            const targetY = Number.parseFloat(shapeEl.attr('y'));
+            const fontSize = Number.parseFloat(shapeEl.attr('font-size'));
             coords = [targetX, targetY, fontSize];
             this.shapeText = shapeEl.text();
         } else if (shapeType === SHAPE.POLYGON) {
@@ -1274,7 +1321,7 @@ function jqueryImageMaps ($) {
                 this.setVertexCoords(coords.vertexCoords);
                 drawVertex(coords.vertexCoords, this.vertexEls, this.shapeType);
             }
-            const index = parseInt(coords.grabEl.attr('data-index'));
+            const index = Number.parseInt(coords.grabEl.attr('data-index'));
             drawShape.call(
                 this,
                 coords.movedCoords,
@@ -1430,8 +1477,8 @@ function jqueryImageMaps ($) {
 
     /**
     * @typedef {PlainObject} module:imageMaps.MovedCoords
-    * @property {module:imageMaps.Coords} movedCoords,
-    * @property {module:imageMaps.VertexCoords} vertexCoords,
+    * @property {module:imageMaps.Coords} movedCoords
+    * @property {module:imageMaps.VertexCoords} vertexCoords
     * @property {module:imageMaps.ShapeElement} grabEl
     */
 
@@ -1453,22 +1500,22 @@ function jqueryImageMaps ($) {
         const {shapeType} = this;
 
         if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
-            const width = parseInt(shapeEl.attr('width'));
-            const height = parseInt(shapeEl.attr('height'));
+            const width = Number.parseInt(shapeEl.attr('width'));
+            const height = Number.parseInt(shapeEl.attr('height'));
             const movedBottomRightX = x + width;
             const movedBottomRightY = y + height;
 
             movedCoords = [x, y, movedBottomRightX, movedBottomRightY];
             vertexCoords = calculateVertexCoords(SHAPE.RECT, movedCoords);
         } else if (shapeType === SHAPE.CIRCLE) {
-            movedCoords = [x, y, parseInt(shapeEl.attr('r'))];
+            movedCoords = [x, y, Number.parseInt(shapeEl.attr('r'))];
             vertexCoords = calculateVertexCoords(SHAPE.CIRCLE, movedCoords);
         } else if (shapeType === SHAPE.ELLIPSE) {
             movedCoords = [
                 x,
                 y,
-                parseInt(shapeEl.attr('rx')),
-                parseInt(shapeEl.attr('ry'))
+                Number.parseInt(shapeEl.attr('rx')),
+                Number.parseInt(shapeEl.attr('ry'))
             ];
             vertexCoords = calculateVertexCoords(SHAPE.ELLIPSE, movedCoords);
         } else if (shapeType === SHAPE.TEXT) {
@@ -1502,31 +1549,31 @@ function jqueryImageMaps ($) {
         let updatedCoords = [];
 
         if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
-            const x = parseInt(shapeEl.attr('x'));
-            const y = parseInt(shapeEl.attr('y'));
+            const x = Number.parseInt(shapeEl.attr('x'));
+            const y = Number.parseInt(shapeEl.attr('y'));
             updatedCoords = [
                 x,
                 y,
-                x + parseInt(shapeEl.attr('width')),
-                y + parseInt(shapeEl.attr('height'))
+                x + Number.parseInt(shapeEl.attr('width')),
+                y + Number.parseInt(shapeEl.attr('height'))
             ];
         } else if (shapeType === SHAPE.CIRCLE) {
             updatedCoords = [
-                parseInt(shapeEl.attr('cx')),
-                parseInt(shapeEl.attr('cy')),
-                parseInt(shapeEl.attr('r'))
+                Number.parseInt(shapeEl.attr('cx')),
+                Number.parseInt(shapeEl.attr('cy')),
+                Number.parseInt(shapeEl.attr('r'))
             ];
         } else if (shapeType === SHAPE.ELLIPSE) {
             updatedCoords = [
-                parseInt(shapeEl.attr('cx')),
-                parseInt(shapeEl.attr('cy')),
-                parseInt(shapeEl.attr('rx')),
-                parseInt(shapeEl.attr('ry'))
+                Number.parseInt(shapeEl.attr('cx')),
+                Number.parseInt(shapeEl.attr('cy')),
+                Number.parseInt(shapeEl.attr('rx')),
+                Number.parseInt(shapeEl.attr('ry'))
             ];
         } else if (shapeType === SHAPE.TEXT) {
             updatedCoords = [
-                parseInt(shapeEl.attr('x')),
-                parseInt(shapeEl.attr('y'))
+                Number.parseInt(shapeEl.attr('x')),
+                Number.parseInt(shapeEl.attr('y'))
             ];
         } else if (shapeType === SHAPE.POLY) {
             // Todo
@@ -1578,10 +1625,6 @@ function jqueryImageMaps ($) {
         const direction = this.vertexEl.attr('data-direction');
         if (shapeType === SHAPE.RECT || shapeType === SHAPE.IMAGE) {
             switch (direction) {
-            default:
-                // eslint-disable-next-line no-console
-                console.warn('Unexpected direction', direction);
-                break;
             // 좌상
             case 'nw':
                 movedCoords = getValidCoordsForRect.call(
@@ -1666,13 +1709,13 @@ function jqueryImageMaps ($) {
                     direction
                 );
                 break;
-            }
-        } else if (shapeType === SHAPE.CIRCLE) {
-            switch (direction) {
             default:
                 // eslint-disable-next-line no-console
                 console.warn('Unexpected direction', direction);
                 break;
+            }
+        } else if (shapeType === SHAPE.CIRCLE) {
+            switch (direction) {
             case 'n':
                 movedCoords = [
                     this.shapeCoords[0],
@@ -1704,13 +1747,13 @@ function jqueryImageMaps ($) {
                     getValidCoordsForCircle.call(this, x - this.shapeCoords[0])
                 ];
                 break;
-            }
-        } else if (shapeType === SHAPE.ELLIPSE) {
-            switch (direction) {
             default:
                 // eslint-disable-next-line no-console
                 console.warn('Unexpected direction', direction);
                 break;
+            }
+        } else if (shapeType === SHAPE.ELLIPSE) {
+            switch (direction) {
             case 'n':
                 movedCoords = [
                     this.shapeCoords[0],
@@ -1742,6 +1785,10 @@ function jqueryImageMaps ($) {
                     getValidCoordsForCircle.call(this, x - this.shapeCoords[0]),
                     this.shapeCoords[3]
                 ];
+                break;
+            default:
+                // eslint-disable-next-line no-console
+                console.warn('Unexpected direction', direction);
                 break;
             }
         } else if (shapeType === SHAPE.POLY) {
@@ -1834,11 +1881,9 @@ function jqueryImageMaps ($) {
         } else if (shapeType === SHAPE.CIRCLE) {
             let radiusRatio;
 
-            if (widthRatio >= heightRatio) {
-                radiusRatio = heightRatio;
-            } else {
-                radiusRatio = widthRatio;
-            }
+            radiusRatio = widthRatio >= heightRatio
+                ? heightRatio
+                : widthRatio;
 
             if (widthRatio === 1) {
                 radiusRatio = heightRatio;
@@ -1881,11 +1926,11 @@ function jqueryImageMaps ($) {
      * @returns {module:imageMaps.RectCoords}
      */
     function convertTextToRectCoords (shapeEl) {
-        const bottomLeftX = parseFloat(shapeEl.attr('x'));
-        const bottomLeftY = parseFloat(shapeEl.attr('y'));
+        const bottomLeftX = Number.parseFloat(shapeEl.attr('x'));
+        const bottomLeftY = Number.parseFloat(shapeEl.attr('y'));
         const shapeSize = shapeEl.get(0).getBBox();
         const {width} = shapeSize;
-        const height = parseFloat(shapeEl.attr('font-size')) *
+        const height = Number.parseFloat(shapeEl.attr('font-size')) *
             FONT_SIZE_RATIO / 2;
 
         return [
@@ -1907,7 +1952,7 @@ function jqueryImageMaps ($) {
             return null;
         }
 
-        return [...coords].map((ch) => parseFloat(ch));
+        return [...coords].map((ch) => Number.parseFloat(ch));
     }
 
     //   UTIL FUNCTIONS
@@ -1928,7 +1973,7 @@ function jqueryImageMaps ($) {
         function s4 () {
             return Math.floor(
                 (1 + Math.random()) * 0x10000
-            ).toString(16).substring(1);
+            ).toString(16).slice(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() +
             '-' + s4() + '-' + s4() + s4() + s4();
@@ -2020,11 +2065,12 @@ function jqueryImageMaps ($) {
          */
         removeAllShapes () {
             this.data('image_maps_inst').removeAllShapes();
+            return this;
         },
 
         /**
          * @function external:"jQuery.fn".destroy
-         * @returns {external:jQuery}
+         * @returns {void}
          */
         destroy () {
             const imageMapsObj = this.data('image_maps_inst');
